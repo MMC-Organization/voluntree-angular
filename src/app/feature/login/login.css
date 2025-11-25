@@ -1,0 +1,21 @@
+@reference "../../../styles.css";
+
+:host {
+  @apply flex w-full max-w-lg;
+}
+
+.label-div {
+  @apply flex flex-col w-full gap-2;
+}
+
+.label-div label {
+  @apply text-base font-semibold;
+}
+
+.label-div input {
+  @apply w-full rounded-lg border border-gray-200 px-4 py-2 text-base bg-white focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-transparent;
+}
+
+.label-div input::placeholder {
+  @apply text-gray-600;
+}
