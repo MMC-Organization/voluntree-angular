@@ -1,55 +1,74 @@
 <form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
   class="w-full flex flex-col gap-4 items-center bg-white/95 backdrop-blur-sm border border-green-100 rounded-2xl shadow-lg p-8"
 >
   <h1 class="text-3xl font-semibold text-green-700">Cadastro de ONG</h1>
   <p class="text-gray-600 text-center">Preencha os dados da sua organização</p>
 
+  @if (errorMessage()) {
+    <div class="w-full p-3 bg-red-100 border border-red-300 rounded-lg text-red-700 text-sm">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (successMessage()) {
+    <div class="w-full p-3 bg-green-100 border border-green-300 rounded-lg text-green-700 text-sm">
+      {{ successMessage() }}
+    </div>
+  }
+
   <div class="label-div">
     <label for="cnpj">CNPJ</label>
-    <input type="text" id="cnpj" name="cnpj" required placeholder="00.000.000/0000-00" />
+    <input type="text" id="cnpj" formControlName="cnpj" placeholder="00.000.000/0000-00" />
   </div>
 
   <div class="label-div">
-    <label for="razaoSocial">Razão Social</label>
-    <input type="text" id="razaoSocial" name="razaoSocial" required placeholder="Nome oficial da organização" />
+    <label for="name">Razão Social</label>
+    <input type="text" id="name" formControlName="name" placeholder="Nome oficial da organização" />
   </div>
 
   <div class="label-div">
     <label for="nomeFantasia">Nome Fantasia</label>
-    <input type="text" id="nomeFantasia" name="nomeFantasia" placeholder="Nome pelo qual é conhecida" />
+    <input type="text" id="nomeFantasia" formControlName="nomeFantasia" placeholder="Nome pelo qual é conhecida" />
   </div>
 
   <div class="label-div">
     <label for="responsavel">Nome do Responsável</label>
-    <input type="text" id="responsavel" name="responsavel" required placeholder="Nome completo do responsável" />
+    <input type="text" id="responsavel" formControlName="responsavel" placeholder="Nome completo do responsável" />
   </div>
 
   <div class="label-div">
     <label for="email">E-mail</label>
-    <input type="email" id="email" name="email" required placeholder="contato@ong.org.br" />
+    <input type="email" id="email" formControlName="email" placeholder="contato@ong.org.br" />
   </div>
 
   <div class="label-div">
     <label for="telefone">Telefone</label>
-    <input type="tel" id="telefone" name="telefone" required placeholder="(00) 00000-0000" />
+    <input type="tel" id="telefone" formControlName="telefone" placeholder="(00) 00000-0000" />
   </div>
 
   <div class="label-div">
     <label for="password">Senha</label>
-    <input type="password" id="password" name="password" required placeholder="Crie uma senha segura" />
+    <input type="password" id="password" formControlName="password" placeholder="Crie uma senha segura" />
   </div>
 
   <div class="label-div">
     <label for="confirmPassword">Confirmar Senha</label>
-    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Repita a senha" />
+    <input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="Repita a senha" />
   </div>
 
   <div class="w-full mt-2">
     <button
       type="submit"
-      class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-linear-to-r from-green-600 to-green-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-4 focus:ring-green-200 transition"
+      [disabled]="loading()"
+      class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-linear-to-r from-green-600 to-green-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-4 focus:ring-green-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      Cadastrar ONG
+      @if (loading()) {
+        Cadastrando...
+      } @else {
+        Cadastrar ONG
+      }
     </button>
   </div>
 
