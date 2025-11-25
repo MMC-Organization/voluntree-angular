@@ -1,3 +1,17 @@
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [];
+import { SearchComponent } from './feature/search/search.component';
+//import { authGuard } from './core/auth/auth-guard'; 
+
+export const routes: Routes = [
+  
+  {
+    path: 'busca',
+    component: SearchComponent
+  },
+  {
+    path: '', 
+    redirectTo: 'busca', 
+    pathMatch: 'full'
+  }
+];
