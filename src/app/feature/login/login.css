@@ -19,3 +19,18 @@
 .label-div input::placeholder {
   @apply text-gray-600;
 }
+
+.label-div.error input {
+  @apply border-red-500 focus:ring-red-300;
+}
+.label-div.error input::placeholder {
+  @apply text-red-500;
+}
+
+.label-div.error label {
+  @apply text-red-600;
+}
+
+.error-message {
+  @apply text-red-600 text-sm mt-1;
+}

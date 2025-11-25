@@ -19,6 +19,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full',
+      },
+      {
         path: 'home',
         loadComponent: () => import('./feature/login/login').then((m) => m.Login),
       },
