@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Voluntário</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <form class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-8 md:p-12 border border-gray-100">
+        
+        <div class="md:col-span-2 mb-6 text-center">
+            <h1 class="text-3xl font-bold text-green-600">Cadastro de Voluntário</h1>
+            <p class="text-gray-500 mt-2">Preencha seus dados para começar a ajudar</p>
+        </div>
+      
+        <div>
+            <label for="nome" class="block mb-2 text-sm font-bold text-gray-800">Nome Completo</label>
+            <input type="text" id="nome" name="nome" required placeholder="Seu nome completo" 
+                   class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"/>
+        </div>
+      
+        <div>
+            <label for="email" class="block mb-2 text-sm font-bold text-gray-800">E-mail</label>
+            <input type="email" id="email" name="email" required placeholder="seu.email@exemplo.com" 
+                   class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"/>
+        </div>
+
+        <div>
+            <label for="cep" class="block mb-2 text-sm font-bold text-gray-800">CEP</label>
+            <input type="text" id="cep" name="cep" required placeholder="00000-000" maxlength="9" 
+                   class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"/>
+        </div>
+
+        <div>
+            <label for="numero" class="block mb-2 text-sm font-bold text-gray-800">Número</label>
+            <input type="number" id="numero" name="numero" required placeholder="Nº da residência" 
+                   class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"/>
+        </div>
+      
+        <div>
+            <label for="password" class="block mb-2 text-sm font-bold text-gray-800">Senha</label>
+            <input type="password" id="password" name="password" required placeholder="Crie uma senha segura" 
+                   class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"/>
+        </div>
+      
+        <div>
+            <label for="confirmPassword" class="block mb-2 text-sm font-bold text-gray-800">Confirmar Senha</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Repita a senha" 
+                   class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 placeholder-gray-400 outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200"/>
+        </div>
+      
+        <div class="md:col-span-2 mt-6">
+            <button
+                type="submit"
+                class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 px-4 rounded-lg shadow hover:shadow-md transition duration-200"
+            >
+                Cadastrar Voluntário
+            </button>
+        </div>
+      
+        <div class="md:col-span-2 text-center mt-2">
+            <a href="/choice" class="text-sm text-green-600 font-medium hover:underline transition">
+                Voltar para escolha de cadastro
+            </a>
+        </div>
+    </form>
+
+</body>
+</html>

@@ -14,6 +14,12 @@ export const routes: Routes = [
     path: 'ong',
     loadComponent: () => import('./feature/ong/ong').then((m) => m.Ong),
   },
+
+  {
+    path: 'voluntario',
+    loadComponent: () => import('./feature/voluntario/voluntario').then((m) => m.Voluntario),
+  },
+
   {
     path: '',
     canActivate: [authGuard],
