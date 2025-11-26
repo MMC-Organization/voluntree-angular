@@ -7,7 +7,7 @@ export const routes: Routes = [
     loadComponent: () => import('./feature/login/login').then((m) => m.Login),
   },
   {
-    path: 'choice',
+    path: 'signup',
     loadComponent: () => import('./feature/choice/choice').then((m) => m.Choice),
   },
   {
