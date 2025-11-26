@@ -1,17 +1,29 @@
-import { Routes } from '@angular/router';
-
+import { Routes } from '@angular/router'
+import { authGuard } from './core/auth/auth-guard'
 import { SearchComponent } from './feature/search/search.component';
-//import { authGuard } from './core/auth/auth-guard'; 
 
 export const routes: Routes = [
-  
   {
-    path: 'busca',
-    component: SearchComponent
+    path: 'login',
+    loadComponent: () => import('./feature/login/login').then((m) => m.Login),
   },
   {
-    path: '', 
-    redirectTo: 'busca', 
-    pathMatch: 'full'
-  }
-];
+    path: '',
+    canActivate: [authGuard], 
+    children: [
+      {
+        path: '',
+        redirectTo: 'home', 
+        pathMatch: 'full',
+      },
+      {
+        path: 'home',
+        loadComponent: () => import('./feature/login/login').then((m) => m.Login),
+      },
+      {
+        path: 'busca',
+        component: SearchComponent
+      }
+    ],
+  },
+]

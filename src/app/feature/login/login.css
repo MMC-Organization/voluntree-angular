@@ -1,0 +1,36 @@
+@reference "../../../styles.css";
+
+:host {
+  @apply flex w-full max-w-lg;
+}
+
+.label-div {
+  @apply flex flex-col w-full gap-2;
+}
+
+.label-div label {
+  @apply text-base font-semibold;
+}
+
+.label-div input {
+  @apply w-full rounded-lg border border-gray-200 px-4 py-2 text-base bg-white focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-transparent;
+}
+
+.label-div input::placeholder {
+  @apply text-gray-600;
+}
+
+.label-div.error input {
+  @apply border-red-500 focus:ring-red-300;
+}
+.label-div.error input::placeholder {
+  @apply text-red-500;
+}
+
+.label-div.error label {
+  @apply text-red-600;
+}
+
+.error-message {
+  @apply text-red-600 text-sm mt-1;
+}
