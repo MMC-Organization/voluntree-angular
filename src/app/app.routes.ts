@@ -8,6 +8,14 @@ export const routes: Routes = [
     loadComponent: () => import('./feature/login/login').then((m) => m.Login),
   },
   {
+    path: 'signup',
+    loadComponent: () => import('./feature/choice/choice').then((m) => m.Choice),
+  },
+  {
+    path: 'ong',
+    loadComponent: () => import('./feature/ong/ong').then((m) => m.Ong),
+  },
+  {
     path: '',
     canActivate: [authGuard], 
     children: [
