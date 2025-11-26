@@ -2,14 +2,29 @@
   
   <h2 class="text-3xl font-bold text-green-700 mb-8">Encontre Vagas Voluntárias</h2>
 
-  <div class="flex gap-2 w-full max-w-md mb-8">
-    <input 
-      type="text" 
-      [ngModel]="cepInput()" 
-      (ngModelChange)="cepInput.set($event)"
-      placeholder="Digite seu CEP (ex: 01001000)"
-      class="w-full rounded-lg border p-3 shadow-sm outline-none focus:ring-2 focus:ring-green-500"
-    />
+  <!-- Input Container -->
+  <div class="flex gap-2 w-full max-w-md mb-8 relative">
+    <div class="relative w-full">
+      <input 
+        type="text" 
+        [ngModel]="cepInput()" 
+        (ngModelChange)="cepInput.set($event)"
+        (keydown.enter)="searchCep()" 
+        placeholder="Digite seu CEP (ex: 01001000)"
+        class="w-full rounded-lg border p-3 pr-10 shadow-sm outline-none focus:ring-2 focus:ring-green-500"
+      />
+      
+      <!-- Botão de Limpar (Só aparece se tiver texto) -->
+      @if (cepInput()) {
+        <button 
+          (click)="clearSearch()"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 font-bold"
+          title="Limpar busca">
+          ✕
+        </button>
+      }
+    </div>
+
     <button 
       (click)="searchCep()"
       class="bg-green-600 text-white px-6 rounded-lg font-bold hover:bg-green-700 transition disabled:opacity-50"
@@ -18,18 +33,21 @@
     </button>
   </div>
 
+  <!-- Mensagens de Erro -->
   @if (errorMsg()) {
     <p class="text-red-600 bg-red-100 p-2 rounded mb-4 w-full text-center border border-red-200">
       {{ errorMsg() }}
     </p>
   }
 
+  <!-- Localização Encontrada -->
   @if (userAddress(); as address) {
-    <div class="text-green-800 bg-green-100 p-4 rounded-lg mb-6 border border-green-200">
+    <div class="text-green-800 bg-green-100 p-4 rounded-lg mb-6 border border-green-200 w-full max-w-md text-center">
       📍 Filtrando vagas em: <strong>{{ address.localidade }} - {{ address.uf }}</strong>
     </div>
   }
 
+  <!-- Grid de Cards -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
     @for (activity of filteredActivities(); track activity.id) {
       <div class="bg-white p-6 rounded-xl shadow border border-gray-100 hover:shadow-lg transition flex flex-col justify-between">
@@ -40,9 +58,9 @@
           </span>
           <p class="text-gray-600 mt-3">{{ activity.description }}</p>
         </div>
-        <button class="mt-4 w-full py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 font-medium">
+        <!--<button class="mt-4 w-full py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 font-medium">
           Ver Detalhes
-        </button>
+        </button>-->
       </div>
     } @empty {
       <p class="col-span-full text-center text-gray-400 py-10">

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router'
 import { authGuard } from './core/auth/auth-guard'
-import { SearchComponent } from './feature/search/search.component';
+import { SearchComponent } from './feature/search/search';
 
 export const routes: Routes = [
   {
