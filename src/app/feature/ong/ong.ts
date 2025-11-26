@@ -22,7 +22,6 @@ export class Ong {
     cnpj: ['', Validators.required],
     name: ['', Validators.required],
     nomeFantasia: [''],
-    responsavel: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     telefone: ['', Validators.required],
     password: ['', [Validators.required, Validators.minLength(6)]],
@@ -35,7 +34,7 @@ export class Ong {
       return;
     }
 
-    const { confirmPassword, nomeFantasia, responsavel, telefone, ...formData } = this.form.value;
+    const { confirmPassword, nomeFantasia, telefone, ...formData } = this.form.value;
 
     if (formData.password !== confirmPassword) {
       this.errorMessage.set('As senhas não coincidem.');
@@ -52,7 +51,6 @@ export class Ong {
       cnpj: formData.cnpj!,
       location: {
         nomeFantasia,
-        responsavel,
         telefone,
       },
     });
