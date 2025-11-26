@@ -1,6 +1,8 @@
+
 /* You can add global styles to this file, and also import other style files */
 @import 'tailwindcss';
 
 .full-screen {
-  @apply flex grow w-full min-h-screen;
+  @apply flex grow w-full;
 }
+
