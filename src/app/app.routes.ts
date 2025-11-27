@@ -17,7 +17,7 @@ export const routes: Routes = [
   },
 
   {
-    path: 'voluntario',
+    path: 'volunteer',
     loadComponent: () => import('./feature/volunteer/volunteer').then((m) => m.Volunteer),
   },
 
