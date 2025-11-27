@@ -16,4 +16,5 @@ export interface UserSignup {
   location: Object
   cnpj?: string
   cause?: string
+  company_name?: string
 }
