@@ -8,11 +8,11 @@ import { Auth } from '../../core/auth/auth';
   selector: 'app-voluntario',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterLink],
-  templateUrl: './voluntario.html',
-  styleUrl: './voluntario.css',
+  templateUrl: './volunteer.html',
+  styleUrl: './volunteer.css',
 })
 
-export class Voluntario {
+export class Volunteer {
   #fb = inject(FormBuilder);
   #router = inject(Router);
   #auth = inject(Auth); 
