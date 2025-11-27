@@ -23,3 +23,7 @@
 .label-div input::placeholder {
   @apply text-gray-400;
 }
+
+textarea {
+  @apply resize-none rounded-lg border border-gray-200 h-11;
+}
