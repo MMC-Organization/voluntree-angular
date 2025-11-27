@@ -21,10 +21,13 @@ export class Ong {
   form = this.#fb.group({
     cnpj: ['', Validators.required],
     name: ['', Validators.required],
-    nomeFantasia: [''],
+    company_name: ['', Validators.required],
+    cause: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     telefone: ['', Validators.required],
     password: ['', [Validators.required, Validators.minLength(6)]],
+    cep: ['', Validators.required],
+    number: ['', Validators.required],
     confirmPassword: ['', Validators.required],
   });
 
@@ -34,7 +37,7 @@ export class Ong {
       return;
     }
 
-    const { confirmPassword, nomeFantasia, telefone, ...formData } = this.form.value;
+    const { confirmPassword, telefone, cep, ...formData } = this.form.value;
 
     if (formData.password !== confirmPassword) {
       this.errorMessage.set('As senhas não coincidem.');
@@ -49,9 +52,12 @@ export class Ong {
       password: formData.password!,
       name: formData.name!,
       cnpj: formData.cnpj!,
+      cause: formData.cause!,
+      company_name: formData.company_name!,
       location: {
-        nomeFantasia,
         telefone,
+        cep,
+        number: formData.number!, 
       },
     });
 
