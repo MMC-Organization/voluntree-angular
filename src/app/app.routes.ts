@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router'
 import { authGuard } from './core/auth/auth-guard'
-import { SearchComponent } from './feature/search/search'
 
 export const routes: Routes = [
   {
@@ -20,7 +19,6 @@ export const routes: Routes = [
     path: 'signup/volunteer',
     loadComponent: () => import('./feature/volunteer/volunteer').then((m) => m.Volunteer),
   },
-
   {
     path: '',
     canActivate: [authGuard],
@@ -32,6 +30,15 @@ export const routes: Routes = [
       },
       {
         path: 'home',
+        loadComponent: () => import('./feature/search/search').then((m) => m.SearchComponent),
+      },
+      {
+        path: 'create',
+        loadComponent: () =>
+          import('./feature/create-activity/create-activity').then((m) => m.CreateActivity),
+      },
+      {
+        path: 'search',
         loadComponent: () => import('./feature/search/search').then((m) => m.SearchComponent),
       },
     ],
