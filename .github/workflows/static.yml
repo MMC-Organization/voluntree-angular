@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -38,39 +38,10 @@ jobs:
 
       - name: Build Angular app
         run: npm run build
-
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v5
-        with:
-          name: dist
-          path: ./dist/voluntree/browser
-    
-  # Single deploy job since we're just deploying
-  deploy:
-    needs: build
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:      
-      - name: Checkout
-        uses: actions/checkout@v4
         
-      - name: Dowload build
-        uses: actions/download-artifact@v6
-        with:
-          name: dist
-          path: ./dist/voluntree/browser
-          
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist/voluntree'
-          
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy to gh pages
+        run: |
+          npx angular-cli-ghpages --dir=dist/your-angular-app
+        env:
+          CI: true
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
