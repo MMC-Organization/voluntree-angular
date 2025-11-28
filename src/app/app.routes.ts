@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router'
 import { authGuard } from './core/auth/auth-guard'
-import { SearchComponent } from './feature/search/search';
+import { SearchComponent } from './feature/search/search'
 
 export const routes: Routes = [
   {
@@ -12,32 +12,28 @@ export const routes: Routes = [
     loadComponent: () => import('./feature/choice/choice').then((m) => m.Choice),
   },
   {
-    path: 'ong',
+    path: 'signup/organization',
     loadComponent: () => import('./feature/ong/ong').then((m) => m.Ong),
   },
 
   {
-    path: 'volunteer',
+    path: 'signup/volunteer',
     loadComponent: () => import('./feature/volunteer/volunteer').then((m) => m.Volunteer),
   },
 
   {
     path: '',
-    canActivate: [authGuard], 
+    canActivate: [authGuard],
     children: [
       {
         path: '',
-        redirectTo: 'home', 
+        redirectTo: 'home',
         pathMatch: 'full',
       },
       {
         path: 'home',
-        loadComponent: () => import('./feature/login/login').then((m) => m.Login),
+        loadComponent: () => import('./feature/search/search').then((m) => m.SearchComponent),
       },
-      {
-        path: 'busca',
-        component: SearchComponent
-      }
     ],
   },
 ]

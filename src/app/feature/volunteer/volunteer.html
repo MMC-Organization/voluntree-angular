@@ -55,6 +55,14 @@
       }
     </div>
 
+    <div class="campo">
+      <label for="telefone">Telefone</label>
+      <input id="telefone" type="text" formControlName="phone">
+      @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
+        <span class="error-msg">Telefone é obrigatório.</span>
+      }
+    </div>
+
     <button type="submit" [disabled]="loading()">
       @if (loading()) {
         <span>Cadastrando...</span>
