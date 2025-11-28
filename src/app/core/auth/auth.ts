@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core'
 import { Supabase } from '../database/supabase'
-import { User } from '@supabase/supabase-js'
-import { UserLogin, UserSignup } from './auth.types'
+import { AuthResponse, User } from '@supabase/supabase-js'
+import { OrganizationSignup, UserLogin, UserSignup } from './auth.types'
 
 @Injectable({
   providedIn: 'root',
@@ -14,22 +14,15 @@ export class Auth {
 
   constructor() {
     this.#database.auth.onAuthStateChange((event, session) => {
-      if (event === 'INITIAL_SESSION') {
-        this.#session.set(session?.user as User)
-        return
-      }
-
-      if (event === 'SIGNED_OUT') {
-        this.#session.set(null)
-      }
+      this.#session.set(session?.user ?? null)
     })
   }
 
-  fetchUser() {
+  async isAuthenticated() {
     return this.#database.auth.getClaims().then(({ data, error }) => {
-      if (error || !data?.claims.user_metadata) return null
+      if (!data || error) return false
 
-      return data.claims.user_metadata
+      return true
     })
   }
 
@@ -54,14 +47,28 @@ export class Auth {
     return this.#database.auth.signOut()
   }
 
-  signup(signupData: UserSignup) {
+  signup(signupData: OrganizationSignup): Promise<AuthResponse>
+  signup(signupData: UserSignup): Promise<AuthResponse>
+
+  signup(signupData: UserSignup | OrganizationSignup) {
     const { email, password, ...metadata } = signupData
+
+    if ('cnpj' in signupData) {
+      console.log(signupData)
+      return this.#database.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { ...metadata, user_type: 'organization' },
+        },
+      })
+    }
 
     return this.#database.auth.signUp({
       email,
       password,
       options: {
-        data: metadata,
+        data: { ...metadata, user_type: 'volunteer' },
       },
     })
   }

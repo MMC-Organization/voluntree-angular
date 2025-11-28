@@ -1,8 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common'; 
-import { Router, RouterLink } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Auth } from '../../core/auth/auth'; 
+import { Component, inject, signal } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { Router, RouterLink } from '@angular/router'
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { Auth } from '../../core/auth/auth'
 
 @Component({
   selector: 'app-voluntario',
@@ -11,66 +11,64 @@ import { Auth } from '../../core/auth/auth';
   templateUrl: './volunteer.html',
   styleUrl: './volunteer.css',
 })
-
 export class Volunteer {
-  #fb = inject(FormBuilder);
-  #router = inject(Router);
-  #auth = inject(Auth); 
+  #fb = inject(FormBuilder)
+  #router = inject(Router)
+  #auth = inject(Auth)
 
-  loading = signal(false);
-  errorMessage = signal<string | null>(null);
-  successMessage = signal<string | null>(null);
+  loading = signal(false)
+  errorMessage = signal<string | null>(null)
+  successMessage = signal<string | null>(null)
 
   form = this.#fb.group({
-    nome: ['', [Validators.required]],
+    nome: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    senha: ['', [Validators.required], [ Validators.minLength(8)]],
-    cep:['',[Validators.required],[Validators.minLength(8)]],
-    numero:['',[Validators.required]]
-  });
+    phone: ['', [Validators.required, Validators.maxLength(20)]],
+    senha: ['', [Validators.required, Validators.minLength(6)]],
+    cep: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
+    numero: ['', [Validators.required, Validators.maxLength(20)]],
+  })
 
   async onSubmit() {
-    this.errorMessage.set(null);
-    this.successMessage.set(null);
+    this.errorMessage.set(null)
+    this.successMessage.set(null)
 
     if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.errorMessage.set('Preencha todos os campos corretamente.');
-      return;
+      this.form.markAllAsTouched()
+      this.errorMessage.set('Preencha todos os campos corretamente.')
+      return
     }
 
-    this.loading.set(true);
+    this.loading.set(true)
 
-    const { nome, email, senha } = this.form.getRawValue();
+    const formData = this.form.getRawValue()
 
     try {
- 
-      
       const response = await this.#auth.signup({
-        email: email!,     
-        password: senha!,   
-        
-       
-        name: nome!,      
-      } as any); 
+        email: formData.email!,
+        password: formData.senha!,
+        name: formData.nome!,
+        phone: formData.phone!,
+        cep: formData.cep!,
+        number: formData.numero!,
+      })
 
       if (response.error) {
-        this.errorMessage.set(response.error.message);
-        this.loading.set(false);
-        return;
+        this.errorMessage.set(response.error.message)
+        this.loading.set(false)
+        return
       }
 
-      this.successMessage.set('Cadastro realizado com sucesso!');
-      
-      setTimeout(() => {
-        this.#router.navigate(['/login']);
-      }, 2000);
+      this.successMessage.set('Cadastro realizado com sucesso!')
 
+      setTimeout(() => {
+        this.#router.navigate(['/login'])
+      }, 2000)
     } catch (error) {
-      console.error(error);
-      this.errorMessage.set('Erro inesperado. Tente novamente.');
+      console.error(error)
+      this.errorMessage.set('Erro inesperado. Tente novamente.')
     } finally {
-      this.loading.set(false);
+      this.loading.set(false)
     }
   }
 }
