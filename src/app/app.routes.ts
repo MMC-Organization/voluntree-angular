@@ -39,7 +39,7 @@ export const routes: Routes = [
       },
       {
         path: 'search',
-        loadComponent: () => import('./feature/search/search').then((m) => m.SearchComponent,
+        loadComponent: () => import('./feature/search/search').then((m) => m.SearchComponent),
       },
     ],
   },
