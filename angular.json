@@ -17,6 +17,8 @@
             "polyfills": [
               "zone.js"
             ],
+            "baseHref": "/voluntree-angular/",
+            "deployUrl": "/voluntree-angular/",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
