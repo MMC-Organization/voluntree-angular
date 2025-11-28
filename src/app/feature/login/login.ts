@@ -15,6 +15,7 @@ export class Login {
   router = inject(Router)
   isLoading = signal(false)
   submitted = signal(false)
+  authError = signal<string | null>(null)
 
   loginForm = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -39,7 +40,8 @@ export class Login {
 
     this.authService.login(data).then(({ data, error }) => {
       if (error) {
-        console.log(error)
+        this.authError.set(error.message)
+        this.isLoading.set(false)
       }
 
       this.router.navigate(['/home'])
