@@ -17,8 +17,7 @@
             "polyfills": [
               "zone.js"
             ],
-            "baseHref": "/voluntree-angular/",
-            "deployUrl": "/voluntree-angular/",
+            "outputPath": "./dist",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -92,6 +91,12 @@
             "styles": [
               "src/styles.css"
             ]
+          }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "baseHref": "https://mmc-organization.github.io/voluntree-angular/"
           }
         }
       }
