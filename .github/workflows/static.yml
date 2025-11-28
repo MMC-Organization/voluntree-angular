@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: dist
-          path: ./dist/voluntree
+          path: ./dist/voluntree/browser
     
   # Single deploy job since we're just deploying
   deploy:
@@ -61,7 +61,7 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: dist
-          path: ./dist/voluntree
+          path: ./dist/voluntree/browser
           
       - name: Setup Pages
         uses: actions/configure-pages@v5
