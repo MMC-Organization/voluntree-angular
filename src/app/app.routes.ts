@@ -20,6 +20,14 @@ export const routes: Routes = [
     path: 'volunteer',
     loadComponent: () => import('./feature/volunteer/volunteer').then((m) => m.Volunteer),
   },
+  {
+    path: 'criar',
+    loadComponent: () => import('./feature/create-activity/create-activity').then(m => m.CreateActivity)
+  },
+  {
+        path: 'busca',
+        component: SearchComponent
+      },
 
   {
     path: '',
@@ -33,11 +41,8 @@ export const routes: Routes = [
       {
         path: 'home',
         loadComponent: () => import('./feature/login/login').then((m) => m.Login),
-      },
-      {
-        path: 'busca',
-        component: SearchComponent
       }
+      
     ],
   },
 ]
