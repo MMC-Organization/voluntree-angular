@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
-import { Auth } from '../../core/auth/auth'
+import { Auth } from '../../../core/services/auth/auth'
 import { Router, RouterLink } from '@angular/router'
 
 @Component({

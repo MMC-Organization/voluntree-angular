@@ -1,23 +1,24 @@
 import { Routes } from '@angular/router'
-import { authGuard } from './core/auth/auth-guard'
+import { authGuard } from './core/services/auth/auth-guard'
 
 export const routes: Routes = [
   {
     path: 'login',
-    loadComponent: () => import('./feature/login/login').then((m) => m.Login),
+    loadComponent: () => import('./feature/auth/login/login').then((m) => m.Login),
   },
   {
     path: 'signup',
-    loadComponent: () => import('./feature/choice/choice').then((m) => m.Choice),
+    loadComponent: () => import('./feature/auth/signup/signup').then((m) => m.Signup),
   },
   {
     path: 'signup/organization',
-    loadComponent: () => import('./feature/ong/ong').then((m) => m.Ong),
+    loadComponent: () => import('./feature/auth/signup/ong/ong').then((m) => m.Ong),
   },
 
   {
     path: 'signup/volunteer',
-    loadComponent: () => import('./feature/volunteer/volunteer').then((m) => m.Volunteer),
+    loadComponent: () =>
+      import('./feature/auth/signup/volunteer/volunteer').then((m) => m.Volunteer),
   },
   {
     path: '',
@@ -30,16 +31,13 @@ export const routes: Routes = [
       },
       {
         path: 'home',
-        loadComponent: () => import('./feature/search/search').then((m) => m.SearchComponent),
-      },
-      {
-        path: 'create',
         loadComponent: () =>
-          import('./feature/create-activity/create-activity').then((m) => m.CreateActivity),
+          import('./feature/activity/search/search').then((m) => m.SearchComponent),
       },
       {
-        path: 'search',
-        loadComponent: () => import('./feature/search/search').then((m) => m.SearchComponent),
+        path: 'activity/create',
+        loadComponent: () =>
+          import('./feature/activity/create/create').then((m) => m.Create),
       },
     ],
   },
