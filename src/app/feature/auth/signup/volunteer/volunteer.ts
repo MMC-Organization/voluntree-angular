@@ -2,10 +2,10 @@ import { Component, inject, signal } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { Router, RouterLink } from '@angular/router'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
-import { Auth } from '../../core/auth/auth'
+import { Auth } from '../../../../core/services/auth/auth'
 
 @Component({
-  selector: 'app-voluntario',
+  selector: 'app-signup-volunteer',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './volunteer.html',

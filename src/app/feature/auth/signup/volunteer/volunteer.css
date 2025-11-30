@@ -1,4 +1,4 @@
-@reference "../../../styles.css";
+@reference "../../../../../styles.css";
 
 :host {
   @apply flex w-full justify-center my-8 px-4;

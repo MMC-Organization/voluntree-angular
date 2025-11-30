@@ -1,4 +1,4 @@
-@reference "../../../styles.css";
+@reference "../../../../styles.css";
 
 :host {
   @apply flex flex-col w-full max-w-lg;

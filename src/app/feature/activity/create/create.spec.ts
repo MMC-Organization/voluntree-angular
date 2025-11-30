@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreateActivity } from './create-activity';
+import { CreateActivity } from './create';
 
 describe('CreateActivity', () => {
   let component: CreateActivity;

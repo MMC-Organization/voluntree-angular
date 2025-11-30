@@ -1,10 +1,10 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LocationService, ViaCepResponse } from '../../core/services/location.service';
-import { ActivitiesService } from '../../core/services/activities.service';
+import { LocationService, ViaCepResponse } from '../../../core/services/location';
+import { ActivitiesService } from '../../../core/services/activities';
 import { Router } from '@angular/router'; 
-import { Activity } from '../../core/models/activity.model';
+import { Activity } from '../../../core/models/activity.model';
 
 @Component({
   selector: 'app-search',
