@@ -1,0 +1,5 @@
+@reference '../../../../styles.css';
+
+:host {
+  @apply flex flex-col grow items-center p-6 w-full mx-auto;
+}

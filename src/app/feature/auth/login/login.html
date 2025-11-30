@@ -1,4 +1,5 @@
-@if (authError()) {
+<main class="full-screen flex-col max-w-lg justify-center items-center">
+  @if (authError()) {
   <div
     class="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
     role="alert"
@@ -6,74 +7,75 @@
     <p class="font-bold">Erro!</p>
     <span class="block sm:inline">{{ authError() }}</span>
   </div>
-}
+  }
 
-<form
-  [formGroup]="loginForm"
-  (ngSubmit)="handleSubmit($event)"
-  class="w-full flex flex-col gap-4 items-center bg-white/95 backdrop-blur-sm border border-green-100 rounded-2xl shadow-lg p-8"
->
-  <h1 class="text-3xl font-semibold text-green-700">Acesse sua conta</h1>
-
-  <div
-    class="label-div {{
-      submitted() && email?.invalid && (email?.touched || email?.dirty) ? 'error' : ''
-    }}"
+  <form
+    [formGroup]="loginForm"
+    (ngSubmit)="handleSubmit($event)"
+    class="w-full flex flex-col gap-4 items-center bg-white/95 backdrop-blur-sm border border-green-100 rounded-2xl shadow-lg p-8"
   >
-    <label for="email">E-mail</label>
-    <input
-      type="email"
-      id="email"
-      name="email"
-      formControlName="email"
-      required
-      placeholder="seu@exemplo.com"
-    />
+    <h1 class="text-3xl font-semibold text-green-700">Acesse sua conta</h1>
 
-    @if (submitted() && email?.invalid && (email?.touched || email?.dirty)) { @if
-    (email?.hasError('required')) {
-    <span class="error-message">O e-mail é obrigatório.</span>
-    } @if (email?.hasError('email')) {
-    <span class="error-message">Insira um e-mail válido.</span>
-    }}
-  </div>
-
-  <div
-    class="label-div {{
-      submitted() && password?.invalid && (password?.touched || password?.dirty) ? 'error' : ''
-    }}"
-  >
-    <label for="password">Senha</label>
-    <input
-      type="password"
-      id="password"
-      name="password"
-      formControlName="password"
-      required
-      placeholder="senhaSENHA123@#$"
-    />
-
-    @if (submitted() && password?.invalid && (password?.touched || password?.dirty)) { @if
-    (password?.hasError('required')) {
-    <span class="error-message">A senha é obrigatória.</span>
-    } @if (password?.hasError('minlength')) {
-    <span class="error-message">A senha deve ter no mínimo 8 caracteres.</span>
-    }}
-  </div>
-
-  <div class="w-full">
-    <button
-      type="submit"
-      [disabled]="isLoading()"
-      class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-linear-to-r from-green-600 to-green-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-4 focus:ring-green-200 transition"
+    <div
+      class="label-div {{
+        submitted() && email?.invalid && (email?.touched || email?.dirty) ? 'error' : ''
+      }}"
     >
-      Entrar
-    </button>
-  </div>
+      <label for="email">E-mail</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        formControlName="email"
+        required
+        placeholder="seu@exemplo.com"
+      />
 
-  <div class="text-center">
-    <a routerLink="/signup" class="text-base text-green-600 hover:underline"
-      >Não tem uma conta? Cadastre-se</a
+      @if (submitted() && email?.invalid && (email?.touched || email?.dirty)) { @if
+      (email?.hasError('required')) {
+      <span class="error-message">O e-mail é obrigatório.</span>
+      } @if (email?.hasError('email')) {
+      <span class="error-message">Insira um e-mail válido.</span>
+      }}
+    </div>
+
+    <div
+      class="label-div {{
+        submitted() && password?.invalid && (password?.touched || password?.dirty) ? 'error' : ''
+      }}"
     >
-  </div>
-</form>
+      <label for="password">Senha</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        formControlName="password"
+        required
+        placeholder="senhaSENHA123@#$"
+      />
+
+      @if (submitted() && password?.invalid && (password?.touched || password?.dirty)) { @if
+      (password?.hasError('required')) {
+      <span class="error-message">A senha é obrigatória.</span>
+      } @if (password?.hasError('minlength')) {
+      <span class="error-message">A senha deve ter no mínimo 8 caracteres.</span>
+      }}
+    </div>
+
+    <div class="w-full">
+      <button
+        type="submit"
+        [disabled]="isLoading()"
+        class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-linear-to-r from-green-600 to-green-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-4 focus:ring-green-200 transition"
+      >
+        Entrar
+      </button>
+    </div>
+
+    <div class="text-center">
+      <a routerLink="/signup" class="text-base text-green-600 hover:underline"
+        >Não tem uma conta? Cadastre-se</a
+      >
+    </div>
+  </form>
+</main>
