@@ -2,15 +2,10 @@
   <div class="w-full max-w-6xl px-4">
     <nav class="flex items-center justify-between py-3">
       <div class="flex items-center gap-3">
-        <div
-          class="w-10 h-10 bg-emerald-800 rounded-full flex items-center justify-center text-lg text-white font-bold"
-        >
-          V
-        </div>
         <a class="text-xl font-bold tracking-wide" routerLink="/">Voluntree</a>
       </div>
 
-      <ul class="hidden md:flex items-center gap-6 font-semibold">
+      <!-- <ul class="hidden md:flex items-center gap-6 font-semibold">
         <li>
           <a
             class="nav-link hover:text-emerald-100"
@@ -35,30 +30,20 @@
             Sair
           </button>
         </li>
-      </ul>
+      </ul> -->
 
-      <!-- Mobile menu using details so no extra JS is required -->
-      <div class="md:hidden">
+      <div class="">
         <details class="relative">
           <summary
             class="list-none cursor-pointer flex items-center gap-2 p-2 rounded hover:bg-emerald-700"
           >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+            <div
+              class="w-10 h-10 bg-emerald-800 rounded-full flex items-center justify-center text-lg text-white font-bold"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              ></path>
-            </svg>
+              {{ userInitial() }}
+            </div>
           </summary>
-          <div class="absolute right-0 mt-2 w-48 bg-emerald-600 rounded shadow-lg z-10">
+          <div class="absolute right-0 mt-3 w-48 bg-emerald-600 rounded shadow-lg z-10">
             <a
               class="block px-4 py-2 hover:bg-emerald-700"
               routerLink="/volunteer/profile"
@@ -69,9 +54,9 @@
               class="block px-4 py-2 hover:bg-emerald-700"
               routerLink="/volunteer/activities"
               routerLinkActive="active"
-              >Atividades</a
+              >Inscrições</a
             >
-            <a class="block px-4 py-2 hover:bg-emerald-700" routerLink="/logout">Sair</a>
+            <button class="w-full text-left px-4 py-2 hover:bg-emerald-700" (click)="logout()">Sair</button>
           </div>
         </details>
       </div>
