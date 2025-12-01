@@ -10,7 +10,8 @@ import { Activity } from '../../../core/models/activity.model';
   selector: 'app-search',
   standalone: true,
   imports: [CommonModule, FormsModule], 
-  templateUrl: './search.html'
+  templateUrl: './search.html',
+  styleUrl: './search.css'
 })
 export class SearchComponent {
   private locationService = inject(LocationService);
