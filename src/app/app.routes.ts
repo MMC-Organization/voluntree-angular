@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router'
 import { authGuard } from './core/guards/auth-guard/auth-guard'
+import { homeRedirectGuard } from './core/guards/home-redirect/home-redirect-guard'
+import { SearchComponent } from './feature/activity/search/search'
 
 export const routes: Routes = [
   {
@@ -30,8 +32,9 @@ export const routes: Routes = [
       },
       {
         path: 'home',
-        redirectTo: 'volunteer',
-        pathMatch: 'full',
+        canActivate: [homeRedirectGuard],
+        loadComponent: () =>
+          import('./shared/components/redirect/redirect').then((m) => m.Redirect),
       },
       {
         path: 'volunteer',
