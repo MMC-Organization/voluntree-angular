@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router'
 import { authGuard } from './core/guards/auth-guard/auth-guard'
 import { homeRedirectGuard } from './core/guards/home-redirect/home-redirect-guard'
-import { SearchComponent } from './feature/activity/search/search'
 
 export const routes: Routes = [
   {
