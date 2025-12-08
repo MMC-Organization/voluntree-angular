@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router'
-import { authGuard } from './core/services/auth/auth-guard'
+import { authGuard } from './core/guards/auth-guard/auth-guard'
+import { homeRedirectGuard } from './core/guards/home-redirect/home-redirect-guard'
 
 export const routes: Routes = [
   {
@@ -14,7 +15,6 @@ export const routes: Routes = [
     path: 'signup/organization',
     loadComponent: () => import('./feature/auth/signup/ong/ong').then((m) => m.Ong),
   },
-
   {
     path: 'signup/volunteer',
     loadComponent: () =>
@@ -31,13 +31,27 @@ export const routes: Routes = [
       },
       {
         path: 'home',
+        canActivate: [homeRedirectGuard],
         loadComponent: () =>
-          import('./feature/activity/search/search').then((m) => m.SearchComponent),
+          import('./shared/components/redirect/redirect').then((m) => m.Redirect),
+      },
+      {
+        path: 'volunteer',
+        loadComponent: () =>
+          import('./shared/layouts/volunteer-layout/volunteer-layout').then(
+            (m) => m.VolunteerLayout
+          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./feature/activity/search/search').then((m) => m.SearchComponent),
+          },
+        ],
       },
       {
         path: 'activity/create',
-        loadComponent: () =>
-          import('./feature/activity/create/create').then((m) => m.Create),
+        loadComponent: () => import('./feature/activity/create/create').then((m) => m.Create),
       },
     ],
   },

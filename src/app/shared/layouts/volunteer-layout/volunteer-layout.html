@@ -1,0 +1,69 @@
+<header class="flex justify-center items-center bg-emerald-600 text-lg text-white shadow-sm h-18">
+  <div class="w-full max-w-6xl px-4">
+    <nav class="flex items-center justify-between py-3">
+      <div class="flex items-center gap-3">
+        <a class="text-xl font-bold tracking-wide" routerLink="/">Voluntree</a>
+      </div>
+
+      <!-- <ul class="hidden md:flex items-center gap-6 font-semibold">
+        <li>
+          <a
+            class="nav-link hover:text-emerald-100"
+            routerLink="/volunteer/profile"
+            routerLinkActive="active"
+            >Perfil</a
+          >
+        </li>
+        <li>
+          <a
+            class="nav-link hover:text-emerald-100"
+            routerLink="/volunteer/activities"
+            routerLinkActive="active"
+            >Atividades</a
+          >
+        </li>
+        <li>
+          <button
+            class="inline-block px-3 py-1 rounded bg-emerald-800 hover:bg-emerald-700"
+            (click)="logout()"
+          >
+            Sair
+          </button>
+        </li>
+      </ul> -->
+
+      <div class="">
+        <details class="relative">
+          <summary
+            class="list-none cursor-pointer flex items-center gap-2 p-2 rounded hover:bg-emerald-700"
+          >
+            <div
+              class="w-10 h-10 bg-emerald-800 rounded-full flex items-center justify-center text-lg text-white font-bold"
+            >
+              {{ userInitial() }}
+            </div>
+          </summary>
+          <div class="absolute right-0 mt-3 w-48 bg-emerald-600 rounded shadow-lg z-10">
+            <a
+              class="block px-4 py-2 hover:bg-emerald-700"
+              routerLink="/volunteer/profile"
+              routerLinkActive="active"
+              >Perfil</a
+            >
+            <a
+              class="block px-4 py-2 hover:bg-emerald-700"
+              routerLink="/volunteer/activities"
+              routerLinkActive="active"
+              >Inscrições</a
+            >
+            <button class="w-full text-left px-4 py-2 hover:bg-emerald-700" (click)="logout()">Sair</button>
+          </div>
+        </details>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="flex grow">
+  <router-outlet></router-outlet>
+</main>
