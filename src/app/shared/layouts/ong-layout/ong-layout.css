@@ -1,0 +1,35 @@
+@reference '../../../../styles.css';
+
+:host {
+  @apply flex flex-col grow w-full;
+}
+
+/* Navbar helper classes */
+.nav-link {
+  @apply text-white transition-colors duration-150;
+}
+
+.active {
+  @apply font-semibold underline decoration-2 underline-offset-4;
+}
+
+/* Reset details summary default marker and adjust menu */
+details[open] > summary::after {
+  content: "";
+}
+summary {
+  list-style: none;
+}
+
+/* Ensure mobile dropdown doesn't overflow on small screens */
+details > div {
+  min-width: 12rem;
+}
+
+/* Line clamp for description */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

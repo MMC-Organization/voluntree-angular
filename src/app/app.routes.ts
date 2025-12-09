@@ -50,6 +50,11 @@ export const routes: Routes = [
         ],
       },
       {
+        path: 'ong',
+        loadComponent: () =>
+          import('./shared/layouts/ong-layout/ong-layout').then((m) => m.OngLayout),
+      },
+      {
         path: 'activity/create',
         loadComponent: () => import('./feature/activity/create/create').then((m) => m.Create),
       },

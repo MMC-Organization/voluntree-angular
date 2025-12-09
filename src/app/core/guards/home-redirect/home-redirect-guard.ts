@@ -9,7 +9,7 @@ export const homeRedirectGuard: CanActivateFn = async (route, state) => {
   const userType = await authService.getClaims()
 
   if (userType?.data?.claims.user_metadata?.['cnpj']) {
-    return new RedirectCommand(router.parseUrl('/organization'))
+    return new RedirectCommand(router.parseUrl('/ong'))
   }
 
   return new RedirectCommand(router.parseUrl('/volunteer'))

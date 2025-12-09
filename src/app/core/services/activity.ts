@@ -28,6 +28,26 @@ export class ActivityService {
     return {data: detailedActivities}
   }
 
+  async getActivitiesByOrganization(organizationId: string) {
+    const { data, error } = await this.supabase
+      .from('activity')
+      .select('*')
+      .eq('organization_id', organizationId)
+    
+    if (error || !data) {
+      return { error }
+    }
+
+    const detailedActivities: ActivityDetail[] = await Promise.all(
+      data.map(async activity => {
+        const address = await firstValueFrom(this.locationService.getAddressByCep(activity.cep))
+        return { ...activity, city: address.localidade, state: address.uf }
+      })
+    )
+    
+    return { data: detailedActivities }
+  }
+
   createActivity(activity: ActivityCreation) {
     return this.supabase.from('activity').insert({
       ...activity,

@@ -1,0 +1,117 @@
+<header class="flex justify-center items-center bg-emerald-600 text-lg text-white shadow-sm h-18">
+  <div class="w-full max-w-6xl px-4">
+    <nav class="flex items-center justify-between py-3">
+      <div class="flex items-center gap-3">
+        <a class="text-xl font-bold tracking-wide" routerLink="/ong">Voluntree</a>
+      </div>
+
+      <div class="">
+        <details class="relative">
+          <summary
+            class="list-none cursor-pointer flex items-center gap-2 p-2 rounded hover:bg-emerald-700"
+          >
+            <div
+              class="w-10 h-10 bg-emerald-800 rounded-full flex items-center justify-center text-lg text-white font-bold"
+            >
+              {{ userInitial() }}
+            </div>
+          </summary>
+          <div class="absolute right-0 mt-3 w-48 bg-emerald-600 rounded shadow-lg z-10">
+            <a
+              class="block px-4 py-2 hover:bg-emerald-700"
+              routerLink="/ong/profile"
+              routerLinkActive="active"
+              >Perfil</a
+            >
+            <a
+              class="block px-4 py-2 hover:bg-emerald-700"
+              routerLink="/activity/create"
+              routerLinkActive="active"
+              >Criar Atividade</a
+            >
+            <button class="w-full text-left px-4 py-2 hover:bg-emerald-700" (click)="logout()">Sair</button>
+          </div>
+        </details>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="flex grow flex-col items-center p-6">
+  <div class="w-full max-w-6xl">
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-3xl font-bold text-green-700">Dashboard - Minhas Atividades</h2>
+      <button 
+        (click)="navigateToCreate()"
+        class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700 transition">
+        + Nova Atividade
+      </button>
+    </div>
+
+    @if (loading()) {
+      <div class="flex justify-center items-center py-20">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+      </div>
+    } @else {
+      @if (errorMsg()) {
+        <p class="text-red-600 bg-red-100 p-4 rounded mb-4 w-full text-center border border-red-200">
+          {{ errorMsg() }}
+        </p>
+      }
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        @for (activity of activities(); track activity.id) {
+          <div class="bg-white p-6 rounded-xl shadow border border-gray-100 hover:shadow-lg transition flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="font-bold text-xl text-gray-800">{{ activity.name }}</h3>
+                <span class="text-xs font-bold text-white bg-green-600 px-2 py-1 rounded-full uppercase tracking-wide">
+                  {{ activity.city }}
+                </span>
+              </div>
+              
+              <p class="text-gray-600 mt-3 line-clamp-3">{{ activity.description }}</p>
+              
+              <div class="mt-4 space-y-2 text-sm text-gray-500">
+                <div class="flex items-center gap-2">
+                  <span>📅</span>
+                  <span>{{ formatDate(activity.date) }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span>👥</span>
+                  <span>{{ activity.spots }} vagas</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span>📍</span>
+                  <span>{{ activity.city }} - {{ activity.state }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex gap-2 mt-4">
+              <button 
+                class="flex-1 py-2 bg-green-100 text-green-700 rounded hover:bg-green-200 font-medium transition cursor-pointer">
+                Ver Detalhes
+              </button>
+              <button 
+                class="flex-1 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 font-medium transition cursor-pointer">
+                Editar
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="col-span-full text-center py-16 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+            <div class="text-6xl mb-4">📋</div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">Nenhuma atividade criada</h3>
+            <p class="text-gray-500 mb-6">Comece criando sua primeira atividade voluntária!</p>
+            <button 
+              (click)="navigateToCreate()"
+              class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700 transition">
+              Criar Primeira Atividade
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</main>
