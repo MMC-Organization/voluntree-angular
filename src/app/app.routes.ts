@@ -1,22 +1,27 @@
 import { Routes } from '@angular/router'
 import { authGuard } from './core/guards/auth-guard/auth-guard'
 import { homeRedirectGuard } from './core/guards/home-redirect/home-redirect-guard'
+import { nonAuthenticatedGuard } from './core/guards/non-authenticated/non-authenticated-guard'
 
 export const routes: Routes = [
   {
     path: 'login',
+    canActivate: [nonAuthenticatedGuard],
     loadComponent: () => import('./feature/auth/login/login').then((m) => m.Login),
   },
   {
     path: 'signup',
+    canActivate: [nonAuthenticatedGuard],
     loadComponent: () => import('./feature/auth/signup/signup').then((m) => m.Signup),
   },
   {
     path: 'signup/organization',
+    canActivate: [nonAuthenticatedGuard],
     loadComponent: () => import('./feature/auth/signup/ong/ong').then((m) => m.Ong),
   },
   {
     path: 'signup/volunteer',
+    canActivate: [nonAuthenticatedGuard],
     loadComponent: () =>
       import('./feature/auth/signup/volunteer/volunteer').then((m) => m.Volunteer),
   },
