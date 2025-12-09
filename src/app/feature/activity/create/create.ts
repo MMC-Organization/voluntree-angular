@@ -2,59 +2,64 @@ import { Component, inject, signal } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterModule } from '@angular/router'
-import { ActivitiesService } from '../../../core/services/activities'
+import { ActivityService } from '../../../core/services/activity'
+import { CepValidator } from '../../../core/validators/cepValidator/cep-validator'
+import { debounceTime } from 'rxjs'
 import { LocationService } from '../../../core/services/location'
+import { Auth } from '../../../core/services/auth/auth'
+import { DateValidator } from "../../../core/validators/dateValidator/date-validator";
 
 @Component({
   selector: 'app-create-activity',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, CepValidator, DateValidator],
   templateUrl: './create.html',
   styleUrl: './create.css',
 })
 export class Create {
   private fb = inject(FormBuilder)
-  private activitiesService = inject(ActivitiesService)
-  private locationService = inject(LocationService)
+  private activityService = inject(ActivityService)
   private router = inject(Router)
+  private locationService = inject(LocationService)
+  private authService = inject(Auth)
 
   isLoading = signal(false)
   submitted = signal(false)
+  errorMessage = signal<string | null>(null)
 
-  form = this.fb.group({
-    title: ['', Validators.required],
+  form = this.fb.nonNullable.group({
+    name: ['', Validators.required],
     description: ['', Validators.required],
     date: ['', Validators.required],
     cep: ['', [Validators.required, Validators.minLength(8)]],
-    city: ['', Validators.required],
-    state: ['', Validators.required],
+    number: ['', Validators.required],
+    spots: [0, [Validators.required, Validators.min(1)]],
+    city: [{ value: '', disabled: true }],
+    state: [{ value: '', disabled: true }],
   })
 
-  buscarCep() {
-    const cepDigitado = this.form.get('cep')?.value
-
-    if (cepDigitado && cepDigitado.length === 8) {
-      this.isLoading.set(true)
-
-      this.locationService.getAddressByCep(cepDigitado).subscribe({
-        next: (res) => {
-          if (!res.erro) {
-            this.form.patchValue({
-              city: res.localidade,
-              state: res.uf,
-            })
-          }
-          this.isLoading.set(false)
-        },
-        error: () => {
-          this.isLoading.set(false)
-        },
+  ngOnInit() {
+    this.form
+      .get('cep')
+      ?.valueChanges.pipe(debounceTime(500))
+      .subscribe((value) => {
+        const cep = this.form.get('cep')
+        if (cep?.valid && value) {
+          const address = this.locationService.getAddressByCep(value).subscribe({
+            next: (res) => {
+              this.form.get('city')?.setValue(res.localidade)
+              this.form.get('state')?.setValue(res.uf)
+            },
+          })
+        }
       })
-    }
+    
+    this.form.get('spots')
   }
 
-  onSubmit() {
+  async onSubmit() {
     this.submitted.set(true)
+    this.errorMessage.set(null)
 
     if (this.form.invalid) {
       return
@@ -62,16 +67,37 @@ export class Create {
 
     this.isLoading.set(true)
 
-    this.activitiesService.createActivity(this.form.value).subscribe({
-      next: () => {
-        alert('Atividade criada com sucesso!')
-        this.router.navigate(['/busca'])
-      },
-      error: (erro) => {
-        console.error(erro)
-        alert('Erro ao salvar atividade.')
-        this.isLoading.set(false)
-      },
+    const { city, state, ...formValue } = this.form.getRawValue()
+
+    const organizationId = await this.authService.getUser().then(({ data, error }) => {
+      if (data && !error) return data.user?.id
+
+      if (error) {
+        this.errorMessage.set(error.message)
+      }
+
+      return null
     })
+
+    if (!organizationId) {
+      return
+    }
+
+    this.activityService
+      .createActivity({ ...formValue, organizationId })
+      .then(({ data, error }) => {
+        this.isLoading.set(false)
+
+        if (error) {
+          this.errorMessage.set(error.message)
+          return
+        }
+
+        alert('Atividade criada')
+        this.router.navigate(['/org'])
+      })
+
+    this.form.get('city')?.setValue('')
+    this.form.get('state')?.setValue('')
   }
 }
