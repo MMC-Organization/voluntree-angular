@@ -25,13 +25,14 @@ export class Ong {
     cause: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     phone: ['', [Validators.required, Validators.maxLength(20)]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.minLength(8),Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
     cep: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
     number: ['', [Validators.required, Validators.maxLength(20)]],
     confirmPassword: ['', Validators.required],
   })
-
+  submitted = signal(false)
   async onSubmit() {
+    this.submitted.set(true)
     if (this.form.invalid) {
       this.errorMessage.set('Preencha todos os campos obrigatórios.')
       return
