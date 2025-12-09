@@ -21,14 +21,45 @@ export class Ong {
   submitted = signal(false)
 
   form = this.#fb.group({
-    cnpj: ['', [Validators.required, Validators.minLength(14), Validators.maxLength(14), Validators.pattern(/^\d{14}$/)]],
+    cnpj: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(14),
+        Validators.maxLength(14),
+        Validators.pattern(/^\d{14}$/),
+      ],
+    ],
     name: ['', [Validators.required, Validators.minLength(2)]],
     company_name: ['', [Validators.required, Validators.minLength(2)]],
     cause: ['', [Validators.required, Validators.minLength(10)]],
     email: ['', [Validators.required, Validators.email]],
-    phone: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(20), Validators.pattern(/^\d+$/)]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    cep: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8), Validators.pattern(/^\d{8}$/)]],
+    phone: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(10),
+        Validators.maxLength(20),
+        Validators.pattern(/^\d+$/),
+      ],
+    ],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
+      ],
+    ],
+    cep: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(8),
+        Validators.pattern(/^\d{8}$/),
+      ],
+    ],
     number: ['', [Validators.required, Validators.maxLength(20)]],
     confirmPassword: ['', Validators.required],
   })
@@ -88,7 +119,8 @@ export class Ong {
       'Signup requires a valid password': 'Senha inválida',
       'To signup, please provide your email': 'E-mail é obrigatório',
       'Email rate limit exceeded': 'Muitas tentativas. Aguarde alguns minutos',
-      'For security purposes, you can only request this once every 60 seconds': 'Aguarde 60 segundos antes de tentar novamente',
+      'For security purposes, you can only request this once every 60 seconds':
+        'Aguarde 60 segundos antes de tentar novamente',
     }
 
     for (const [key, value] of Object.entries(errorMap)) {
@@ -102,17 +134,17 @@ export class Ong {
 
   async onSubmit() {
     this.submitted.set(true)
-    this.errorMessage.set(null)
-
     if (this.form.invalid) {
       const invalidFields = Object.keys(this.form.controls).filter(
-        key => this.form.get(key)?.invalid
+        (key) => this.form.get(key)?.invalid
       )
-      
+
       if (invalidFields.length === 1) {
         this.errorMessage.set(this.getFieldError(invalidFields[0]))
       } else {
-        this.errorMessage.set(`Corrija os ${invalidFields.length} campos com erro antes de continuar.`)
+        this.errorMessage.set(
+          `Corrija os ${invalidFields.length} campos com erro antes de continuar.`
+        )
       }
       return
     }

@@ -1,75 +1,89 @@
-<main class="full-screen flex-col justify-center items-center">
-  <div class="container">
-    <h2>Cadastro de Voluntário</h2>
+<main class="full-screen max-w-3xl flex-col justify-center items-center">
+  <form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    class="w-full flex flex-col gap-4 items-center bg-white/95 backdrop-blur-sm border border-green-100 rounded-2xl shadow-lg p-8"
+  >
+    <h2 class="text-3xl font-semibold text-green-700">Cadastro de Voluntário</h2>
+    <p class="text-gray-600 text-center">Junte-se à nossa rede de voluntários</p>
 
-    @if (successMessage()) {
-    <div class="alert success">
-      {{ successMessage() }}
-    </div>
-    } @if (errorMessage()) {
-    <div class="alert error">
+    @if (errorMessage()) {
+    <div class="w-full p-3 bg-red-100 border border-red-300 rounded-lg text-red-700 text-sm">
       {{ errorMessage() }}
+    </div>
+    } @if (successMessage()) {
+    <div class="w-full p-3 bg-green-100 border border-green-300 rounded-lg text-green-700 text-sm">
+      {{ successMessage() }}
     </div>
     }
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="campo">
-        <label for="nome">Nome</label>
-        <input id="nome" type="text" formControlName="nome" />
-        @if (form.get('nome')?.invalid && form.get('nome')?.touched) {
-        <span class="error-msg">Nome é obrigatório.</span>
+    <div class="form-grid">
+      
+      <div class="label-div">
+        <label for="nome">Nome Completo</label>
+        <input id="nome" type="text" formControlName="nome" placeholder="Seu nome completo" />
+        @if (submitted() && form.get('nome')?.invalid) {
+        <span class="text-xs text-red-600 mt-1">Campo obrigatório.</span>
         }
       </div>
 
-      <div class="campo">
-        <label for="email">Email</label>
-        <input id="email" type="email" formControlName="email" />
-        @if (form.get('email')?.invalid && form.get('email')?.touched) {
-        <span class="error-msg">Digite um e-mail válido.</span>
+      <div class="label-div">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" formControlName="email" placeholder="seu@email.com" />
+        @if (submitted() && form.get('email')?.invalid) {
+        <span class="text-xs text-red-600 mt-1">Email inválido.</span>
         }
       </div>
 
-      <div class="senha">
+      <div class="label-div">
         <label for="senha">Senha</label>
-        <input id="senha" type="password" formControlName="senha" />
-        @if (form.get('senha')?.invalid && form.get('senha')?.touched) {
-        <span class="error-msg">A senha é obrigatória.</span>
+        <input id="senha" type="password" formControlName="senha" placeholder="Crie uma senha segura" />
+        @if (submitted() && form.get('senha')?.invalid) {
+        <span class="text-xs text-red-600 mt-1">Escolha uma senha mais segura. Use uma senha de 8 caracteres ou mais e uma combinação de letras (maiscúlas e minúsculas),números e símbolos.</span>
         }
       </div>
 
-      <div class="cep">
-        <label for="cep">CEP</label>
-        <input id="cep" type="text" formControlName="cep" />
-        @if (form.get('cep')?.invalid && form.get('cep')?.touched) {
-        <span class="error-msg">CEP é obrigatório.</span>
-        }
-      </div>
-
-      <div class="campo">
-        <label for="numero">Número</label>
-        <input id="numero" type="text" formControlName="numero" />
-        @if (form.get('numero')?.invalid && form.get('numero')?.touched) {
-        <span class="error-msg">Número é obrigatório.</span>
-        }
-      </div>
-
-      <div class="campo">
+      <div class="label-div">
         <label for="telefone">Telefone</label>
-        <input id="telefone" type="text" formControlName="phone" />
-        @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
-        <span class="error-msg">Telefone é obrigatório.</span>
+        <input id="telefone" type="text" formControlName="phone" placeholder="(00) 00000-0000" />
+        @if (submitted() && form.get('phone')?.invalid) {
+        <span class="text-xs text-red-600 mt-1">Campo obrigatório.</span>
         }
       </div>
 
-      <button type="submit" [disabled]="loading()">
-        @if (loading()) {
-        <span>Cadastrando...</span>
-        } @else {
-        <span>Criar conta</span>
+      <div class="label-div">
+        <label for="cep">CEP</label>
+        <input id="cep" type="text" formControlName="cep" placeholder="00000-000" />
+        @if (submitted() && form.get('cep')?.invalid) {
+        <span class="text-xs text-red-600 mt-1">Campo obrigatório.</span>
         }
-      </button>
+      </div>
 
-      <div class="footer-link">Já tem conta? <a routerLink="/login">Faça Login</a></div>
-    </form>
-  </div>
+      <div class="label-div">
+        <label for="numero">Número</label>
+        <input id="numero" type="text" formControlName="numero" placeholder="Nº" />
+        @if (submitted() && form.get('numero')?.invalid && form.get('numero')?.touched) {
+        <span class="text-xs text-red-600 mt-1">Campo obrigatório.</span>
+        }
+      </div>
+
+    </div>
+
+    <div class="w-full mt-2">
+      <button
+        type="submit"
+        [disabled]="loading()"
+        class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-green-600 to-green-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-4 focus:ring-green-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        @if (loading()) { Cadastrando... } @else { Criar conta }
+      </button>
+    </div>
+
+    <div class="text-center mt-2">
+      <span class="text-gray-600 text-sm">Já tem conta? </span>
+      <a routerLink="/login" class="text-base text-green-600 hover:underline font-medium">
+        Faça Login
+      </a>
+    </div>
+  </form>
 </main>
