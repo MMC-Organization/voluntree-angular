@@ -52,6 +52,10 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./feature/activity/search/search').then((m) => m.SearchComponent),
           },
+          {
+            path: 'profile',
+            loadComponent: () => import('./feature/volunteer/profile/profile').then(m => m.VolProfile)
+          }
         ],
       },
       {
