@@ -24,12 +24,21 @@ export class Volunteer {
     nome: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     phone: ['', [Validators.required, Validators.maxLength(20)]],
-    senha: ['', [Validators.required, Validators.minLength(8),Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
+    senha: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\+\-=\{\}\[\]:"'<>,\.?\/\\|~`]).{8,}$/
+        ),
+      ],
+    ],
     cep: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
     numero: ['', [Validators.required, Validators.maxLength(20)]],
   })
 
-submitted = signal(false)
+  submitted = signal(false)
   async onSubmit() {
     this.errorMessage.set(null)
     this.successMessage.set(null)
@@ -37,6 +46,7 @@ submitted = signal(false)
 
     if (this.form.invalid) {
       this.errorMessage.set('Preencha todos os campos obrigatórios.')
+      console.error(this.form.get('senha')?.errors)
       return
     }
 

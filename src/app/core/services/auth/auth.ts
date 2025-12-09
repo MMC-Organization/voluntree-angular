@@ -62,7 +62,6 @@ export class Auth {
     const { email, password, ...metadata } = signupData
 
     if ('cnpj' in signupData) {
-      console.log(signupData)
       return this.#database.auth.signUp({
         email,
         password,
