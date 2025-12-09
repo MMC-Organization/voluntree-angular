@@ -7,11 +7,12 @@ import { CepValidator } from '../../../core/validators/cepValidator/cep-validato
 import { debounceTime } from 'rxjs'
 import { LocationService } from '../../../core/services/location'
 import { Auth } from '../../../core/services/auth/auth'
+import { DateValidator } from "../../../core/validators/dateValidator/date-validator";
 
 @Component({
   selector: 'app-create-activity',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, CepValidator],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, CepValidator, DateValidator],
   templateUrl: './create.html',
   styleUrl: './create.css',
 })
@@ -32,7 +33,7 @@ export class Create {
     date: ['', Validators.required],
     cep: ['', [Validators.required, Validators.minLength(8)]],
     number: ['', Validators.required],
-    spots: [0, Validators.required],
+    spots: [0, [Validators.required, Validators.min(1)]],
     city: [{ value: '', disabled: true }],
     state: [{ value: '', disabled: true }],
   })
@@ -52,6 +53,8 @@ export class Create {
           })
         }
       })
+    
+    this.form.get('spots')
   }
 
   async onSubmit() {
