@@ -1,0 +1,5 @@
+@reference "../../../../styles.css";
+
+input::placeholder, textarea::placeholder {
+  @apply text-gray-400;
+}
