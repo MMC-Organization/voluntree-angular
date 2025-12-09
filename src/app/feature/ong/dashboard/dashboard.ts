@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common'
 import { Auth } from '../../../core/services/auth/auth'
 import { ActivityService } from '../../../core/services/activity'
 import { ActivityDetail } from '../../../core/models/activity.model'
+import { Activity } from "../../../shared/components/activity/activity/activity";
 
 @Component({
   selector: 'app-ong-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Activity],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -49,8 +50,4 @@ export class OngDashboard {
     this.router.navigate(['/ong/activity/create'])
   }
 
-  formatDate(dateString: string): string {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('pt-BR')
-  }
 }
