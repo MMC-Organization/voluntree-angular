@@ -30,6 +30,10 @@ export class Auth {
     return this.#database.auth.getClaims()
   }
 
+  getUser() {
+    return this.#database.auth.getUser()
+  }
+
   login(loginData: UserLogin) {
     const { email, password } = loginData
 
