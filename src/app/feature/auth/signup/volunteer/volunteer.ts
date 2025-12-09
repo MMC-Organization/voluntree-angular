@@ -24,18 +24,19 @@ export class Volunteer {
     nome: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     phone: ['', [Validators.required, Validators.maxLength(20)]],
-    senha: ['', [Validators.required, Validators.minLength(6)]],
+    senha: ['', [Validators.required, Validators.minLength(8),Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
     cep: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
     numero: ['', [Validators.required, Validators.maxLength(20)]],
   })
 
+submitted = signal(false)
   async onSubmit() {
     this.errorMessage.set(null)
     this.successMessage.set(null)
+    this.submitted.set(true)
 
     if (this.form.invalid) {
-      this.form.markAllAsTouched()
-      this.errorMessage.set('Preencha todos os campos corretamente.')
+      this.errorMessage.set('Preencha todos os campos obrigatórios.')
       return
     }
 
