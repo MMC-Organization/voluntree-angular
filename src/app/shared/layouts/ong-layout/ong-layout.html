@@ -1,0 +1,42 @@
+<header class="flex justify-center items-center bg-emerald-600 text-lg text-white shadow-sm h-18">
+  <div class="w-full max-w-6xl px-4">
+    <nav class="flex items-center justify-between py-3">
+      <div class="flex items-center gap-3">
+        <a class="text-xl font-bold tracking-wide" routerLink="/ong">Voluntree</a>
+      </div>
+
+      <div class="">
+        <details class="relative">
+          <summary
+            class="list-none cursor-pointer flex items-center gap-2 p-2 rounded hover:bg-emerald-700"
+          >
+            <div
+              class="w-10 h-10 bg-emerald-800 rounded-full flex items-center justify-center text-lg text-white font-bold"
+            >
+              {{ userInitial() }}
+            </div>
+          </summary>
+          <div class="absolute right-0 mt-3 w-48 bg-emerald-600 rounded shadow-lg z-10">
+            <a
+              class="block px-4 py-2 hover:bg-emerald-700"
+              routerLink="/ong/profile"
+              routerLinkActive="active"
+              >Perfil</a
+            >
+            <a
+              class="block px-4 py-2 hover:bg-emerald-700"
+              routerLink="/ong/activity/create"
+              routerLinkActive="active"
+              >Criar Atividade</a
+            >
+            <button class="w-full text-left px-4 py-2 hover:bg-emerald-700" (click)="logout()">Sair</button>
+          </div>
+        </details>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="flex grow flex-col items-center p-6">
+  <router-outlet></router-outlet>
+</main>

@@ -1,5 +1,9 @@
 @reference "../../../../styles.css";
 
+:host {
+  @apply flex flex-col items-center w-full py-6;
+}
+
 input::placeholder, textarea::placeholder {
   @apply text-gray-400;
 }

@@ -94,7 +94,7 @@ export class Create {
         }
 
         alert('Atividade criada')
-        this.router.navigate(['/org'])
+        this.router.navigate(['/ong'])
       })
 
     this.form.get('city')?.setValue('')

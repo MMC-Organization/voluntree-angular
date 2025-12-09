@@ -25,6 +25,7 @@ export class Login {
   handleSubmit(event: SubmitEvent) {
     event.preventDefault()
 
+    this.authError.set(null)
     this.submitted.set(true)
     this.loginForm.markAllAsTouched()
     this.loginForm.markAllAsDirty()
