@@ -1,1 +1,0 @@
-import{Va as r}from"./chunk-7C5HZ2QE.js";var c=class e{static \u0275fac=function(t){return new(t||e)};static \u0275cmp=r({type:e,selectors:[["app-redirect"]],decls:0,vars:0,template:function(t,i){},encapsulation:2})};export{c as Redirect};
