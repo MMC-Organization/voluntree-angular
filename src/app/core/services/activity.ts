@@ -55,4 +55,35 @@ export class ActivityService {
       organization_id: activity.organizationId,
     })
   }
+
+  // 
+  async signupToActivity(activityId: string | number, volunteerId: string) {
+    const activityIdNumeric = typeof activityId === 'string' ? Number(activityId) : activityId
+
+    if (Number.isNaN(activityIdNumeric)) {
+      return { error: { message: 'ID da atividade inválido.' } }
+    }
+    const { data: existing, error: selErr } = await this.supabase
+      .from('signup')
+      .select('volunteer_id')
+      .eq('activity_id', activityIdNumeric)
+      .eq('volunteer_id', volunteerId)
+      .maybeSingle()
+
+    if (selErr) {
+      return { error: selErr }
+    }
+
+    if (existing) {
+      return { error: { message: 'Você já está inscrito nessa atividade.' } }
+    }
+
+    //inscri naa signup
+    const insert = await this.supabase.from('signup').insert({
+      volunteer_id: volunteerId,
+      activity_id: activityIdNumeric,
+    })
+
+    return insert
+  }
 }
