@@ -53,10 +53,23 @@ export const routes: Routes = [
         path: 'ong',
         loadComponent: () =>
           import('./shared/layouts/ong-layout/ong-layout').then((m) => m.OngLayout),
-      },
-      {
-        path: 'activity/create',
-        loadComponent: () => import('./feature/activity/create/create').then((m) => m.Create),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./feature/ong/dashboard/dashboard').then((m) => m.OngDashboard),
+          },
+          {
+            path: 'profile',
+            loadComponent: () =>
+              import('./feature/ong/profile/profile').then((m) => m.OngProfile),
+          },
+          {
+            path: 'activity/create',
+            loadComponent: () =>
+              import('./feature/activity/create/create').then((m) => m.Create),
+          },
+        ],
       },
     ],
   },
