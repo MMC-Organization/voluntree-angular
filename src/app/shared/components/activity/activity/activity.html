@@ -43,9 +43,11 @@
     </button>
     } @else {
     <button
-      class="flex-1 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-medium transition cursor-pointer"
+      (click)="signup()"
+      [disabled]="loading()"
+      class="flex-1 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-medium transition cursor-pointer disabled:opacity-50"
     >
-      Quero Participar
+      {{ loading() ? 'Aguarde...' : 'Quero Participar' }}
     </button>
     }
   </div>
