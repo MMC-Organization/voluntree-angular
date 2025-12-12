@@ -55,7 +55,12 @@ export const routes: Routes = [
           {
             path: 'profile',
             loadComponent: () => import('./feature/volunteer/profile/profile').then(m => m.VolProfile)
-          }
+          },
+          {
+  path: 'activities',
+  loadComponent: () =>
+    import('./feature/volunteer/subscriptions/subscriptions').then((m) => m.VolunteerSubscriptions),
+}
         ],
       },
       {
