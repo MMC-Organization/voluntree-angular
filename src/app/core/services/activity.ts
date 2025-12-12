@@ -86,4 +86,44 @@ export class ActivityService {
 
     return insert
   }
+  async getVolunteerActivities(volunteerId: string) {
+    const { data, error } = await this.supabase
+      .from('signup')
+      .select('activity(*)')
+      .eq('volunteer_id', volunteerId)
+
+    if (error || !data) {
+      return { error }
+    }
+
+   
+    const activities = data
+      .map((item: any) => item.activity)
+      .filter(Boolean)
+
+    const detailedActivities: ActivityDetail[] = await Promise.all(
+      activities.map(async (activity: any) => {
+        const address = await firstValueFrom(this.locationService.getAddressByCep(activity.cep))
+        return { ...activity, city: address.localidade, state: address.uf }
+      })
+    )
+
+    return { data: detailedActivities }
+  }
+
+  
+  async unsubscribeFromActivity(activityId: string | number, volunteerId: string) {
+    const activityIdNumeric = typeof activityId === 'string' ? Number(activityId) : activityId
+
+    if (Number.isNaN(activityIdNumeric)) {
+      return { error: { message: 'ID da atividade inválido.' } }
+    }
+
+    const del = await this.supabase
+      .from('signup')
+      .delete()
+      .match({ activity_id: activityIdNumeric, volunteer_id: volunteerId })
+
+    return del
+  }
 }
