@@ -1,3 +1,3 @@
 # Voluntree
 
-Usando esse [backend](https://github.com/mmc-organization/voluntree-spring).
+Este projeto utiliza o [backend](https://github.com/mmc-organization/voluntree-spring) como backend da aplicação.
