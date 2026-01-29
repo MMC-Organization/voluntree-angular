@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core'
 import { Router, RouterModule } from '@angular/router'
 import { Auth } from '../../../core/services/auth/auth'
+import { User } from '@/app/core/services/user/user'
 
 @Component({
   selector: 'app-ong-layout',
@@ -9,26 +10,24 @@ import { Auth } from '../../../core/services/auth/auth'
   styleUrl: './ong-layout.css',
 })
 export class OngLayout {
-  authService = inject(Auth)
+  #auth = inject(Auth)
+  #user = inject(User)
   router = inject(Router)
   userInitial = signal('O')
 
   constructor() {
-    this.loadUserData()
-  }
-
-  private async loadUserData() {
-    const { data, error } = await this.authService.getClaims()
-    if (error || !data) return
-
-    const name = data.claims.user_metadata?.['name'] as string
-    if (name) {
-      this.userInitial.set(name[0].toUpperCase())
-    }
+    this.#user.userData.subscribe({
+      next: (res) => {
+        this.userInitial.set(res.name[0].toUpperCase())
+      },
+    })
   }
 
   logout() {
-    this.authService.logout()
-    this.router.navigate(['/login'])
+    this.#auth.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login'])
+      },
+    })
   }
 }

@@ -1,82 +1,42 @@
-import { computed, inject, Injectable, signal } from '@angular/core'
-import { Supabase } from '../database/supabase'
-import { AuthResponse, User } from '@supabase/supabase-js'
-import { OrganizationSignup, UserLogin, UserSignup } from './auth.types'
+import { environment } from '@/environments/environment'
+import { HttpClient } from '@angular/common/http'
+import { inject, Injectable } from '@angular/core'
+import { AuthResponse, AuthState, OrganizationSignup, UserLogin, VolunteerSignup } from './auth.types'
 
 @Injectable({
   providedIn: 'root',
 })
 export class Auth {
-  #supabase = inject(Supabase)
-  #database = this.#supabase.client
-  #session = signal<User | null>(null)
-  session = computed(() => this.#session())
+  #http = inject(HttpClient)
 
-  constructor() {
-    this.#database.auth.onAuthStateChange((event, session) => {
-      this.#session.set(session?.user ?? null)
-    })
+  get isAuthenticated() {
+    return this.#http.get<AuthState>(`${environment.apiUrl}/api/auth`, { withCredentials: true })
   }
 
-  async isAuthenticated() {
-    return this.#database.auth.getClaims().then(({ data, error }) => {
-      if (!data || error) return false
-
-      return true
-    })
-  }
-
-  getClaims() {
-    return this.#database.auth.getClaims()
-  }
-
-  getUser() {
-    return this.#database.auth.getUser()
+  obtainCsrfToken() {
+    return this.#http.get(`${environment.apiUrl}/api/auth/csrf`, { withCredentials: true })
   }
 
   login(loginData: UserLogin) {
-    const { email, password } = loginData
-
-    return this.#database.auth
-      .signInWithPassword({
-        email,
-        password,
-      })
-      .then((res) => {
-        if (!res.error && res.data) {
-          this.#session.set(res.data.user)
-        }
-
-        return res
-      })
+    return this.#http.post<AuthResponse>(`${environment.apiUrl}/api/auth/login`, loginData, {
+      withCredentials: true,
+      observe: 'response'
+    })
   }
 
   logout() {
-    return this.#database.auth.signOut()
+    return this.#http.post(`${environment.apiUrl}/api/auth/logout`, null, { withCredentials: true })
   }
 
-  signup(signupData: OrganizationSignup): Promise<AuthResponse>
-  signup(signupData: UserSignup): Promise<AuthResponse>
+  signupOrganization(signupData: OrganizationSignup) {
+    return this.#http.post(`${environment.apiUrl}/api/auth/signup/organization`, signupData, {
+      withCredentials: true,
+    })
+  }
 
-  signup(signupData: UserSignup | OrganizationSignup) {
-    const { email, password, ...metadata } = signupData
-
-    if ('cnpj' in signupData) {
-      return this.#database.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { ...metadata, user_type: 'organization' },
-        },
-      })
-    }
-
-    return this.#database.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { ...metadata, user_type: 'volunteer' },
-      },
+  signupVolunteer(signupData: VolunteerSignup) {
+    return this.#http.post(`${environment.apiUrl}/api/auth/signup/volunteer`, signupData, {
+      withCredentials: true,
     })
   }
 }

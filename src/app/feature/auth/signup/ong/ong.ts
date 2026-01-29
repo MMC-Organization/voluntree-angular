@@ -3,6 +3,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
 import { Auth } from '../../../../core/services/auth/auth'
 import { CommonModule } from '@angular/common'
+import { finalize } from 'rxjs'
+import { HttpErrorResponse } from '@angular/common/http'
 
 @Component({
   selector: 'app-signup-ong',
@@ -49,7 +51,7 @@ export class Ong {
         Validators.required,
         Validators.minLength(8),
         Validators.pattern(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\+\-=\{\}\[\]:"'<>,\.?\/\\|~`]).{8,}$/
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\+\-=\{\}\[\]:"'<>,\.?\/\\|~`]).{8,}$/,
         ),
       ],
     ],
@@ -138,14 +140,14 @@ export class Ong {
     this.submitted.set(true)
     if (this.form.invalid) {
       const invalidFields = Object.keys(this.form.controls).filter(
-        (key) => this.form.get(key)?.invalid
+        (key) => this.form.get(key)?.invalid,
       )
 
       if (invalidFields.length === 1) {
         this.errorMessage.set(this.getFieldError(invalidFields[0]))
       } else {
         this.errorMessage.set(
-          `Corrija os ${invalidFields.length} campos com erro antes de continuar.`
+          `Corrija os ${invalidFields.length} campos com erro antes de continuar.`,
         )
       }
       return
@@ -160,28 +162,36 @@ export class Ong {
 
     this.loading.set(true)
 
-    const response = await this.#auth.signup({
-      email: formData.email!,
-      password: formData.password!,
-      name: formData.name!,
-      cnpj: formData.cnpj!,
-      cause: formData.cause!,
-      company_name: formData.company_name!,
-      phone: formData.phone!,
-      cep: formData.cep!,
-      number: formData.number!,
-    })
-
-    this.loading.set(false)
-
-    if (response.error) {
-      this.errorMessage.set(this.translateSupabaseError(response.error.message))
-      return
-    }
-
-    this.successMessage.set('Cadastro realizado com sucesso! Redirecionando...')
-    setTimeout(() => {
-      this.#router.navigate(['/login'])
-    }, 2000)
+    this.#auth
+      .signupOrganization({
+        email: formData.email!,
+        password: formData.password!,
+        name: formData.name!,
+        cnpj: formData.cnpj!,
+        cause: formData.cause!,
+        companyName: formData.company_name!,
+        phoneNumber: formData.phone!,
+        cep: formData.cep!,
+        number: formData.number!,
+      })
+      .pipe(
+        finalize(() => {
+          this.loading.set(false)
+        }),
+      )
+      .subscribe({
+        next: (res) => {
+          this.successMessage.set('Cadastro realizado com sucesso! Redirecionando...')
+          setTimeout(() => {
+            this.#router.navigate(['/login'])
+          }, 2000)
+        },
+        error: (error: HttpErrorResponse) => {
+          if (error) {
+            this.errorMessage.set(error.message)
+            return
+          }
+        },
+      })
   }
 }

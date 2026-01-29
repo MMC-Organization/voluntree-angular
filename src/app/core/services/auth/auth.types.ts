@@ -1,7 +1,11 @@
-import { User } from '@supabase/supabase-js'
-
 export interface AuthState {
-  session: User
+  status: boolean
+  userType: 'VOLUNTEER' | 'ORGANIZATION'
+}
+
+export interface AuthResponse {
+  authenticated: boolean
+  message: string
 }
 
 export interface UserLogin {
@@ -9,17 +13,18 @@ export interface UserLogin {
   password: string
 }
 
-export interface UserSignup {
+export interface VolunteerSignup {
   name: string
   email: string
-  phone: string
+  phoneNumber: string
   password: string
   cep: string
   number: string
+  cpf: string
 }
 
-export interface OrganizationSignup extends UserSignup {
+export interface OrganizationSignup extends Omit<VolunteerSignup, 'cpf'> {
   cnpj: string
   cause: string
-  company_name: string
+  companyName: string
 }
