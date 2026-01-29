@@ -4,6 +4,7 @@ export interface UserProfile {
   phoneNumber: string
   cep: string
   number: string
+  userType: "VOLUNTEER" | "ORGANIZATION"
   cpf: string | null
   cnpj: string | null
   cause: string | null
