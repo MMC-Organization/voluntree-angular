@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
-import { Auth } from '../../../core/services/auth/auth'
 import { Router, RouterLink } from '@angular/router'
+import { Auth } from '@/app/core/services/auth/auth'
 
 @Component({
   selector: 'app-login',
@@ -31,7 +31,7 @@ export class Login {
     this.loginForm.markAllAsDirty()
 
     if (this.loginForm.invalid) {
-      console.log(this.password?.errors)
+      // console.log(this.password?.errors)
       return
     }
 
@@ -39,13 +39,19 @@ export class Login {
 
     const data = this.loginForm.getRawValue()
 
-    this.authService.login(data).then(({ data, error }) => {
-      if (error) {
-        this.authError.set(error.message)
-        this.isLoading.set(false)
-      }
+    this.authService.login(data).subscribe({
+      next: (res) => {
+        if (!res.body?.authenticated) {
+          this.authError.set(res.body?.message ?? 'Erro na autenticação. Tente novamente.')
+          this.isLoading.set(false)
+        }
 
-      this.router.navigate(['/home'])
+        this.router.navigate(['/home'])
+      },
+      error: (err) => {
+        this.authError.set('Erro na autenticação. Tente novamente.')
+        this.isLoading.set(false)
+      },
     })
   }
 
