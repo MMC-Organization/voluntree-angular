@@ -67,6 +67,14 @@
       </div>
 
       <div class="label-div">
+        <label for="cpf">CPF</label>
+        <input id="cpf" type="text" formControlName="cpf" placeholder="00000000000" maxlength="11" />
+        @if (submitted() && form.get('cpf')?.invalid) {
+        <span class="text-xs text-red-600 mt-1">Campo obrigatório.</span>
+        }
+      </div>
+
+      <div class="label-div">
         <label for="numero">Número</label>
         <input id="numero" type="text" formControlName="numero" placeholder="Nº" />
         @if (submitted() && form.get('numero')?.invalid && form.get('numero')?.touched) {
