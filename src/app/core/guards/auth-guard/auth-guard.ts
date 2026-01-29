@@ -1,6 +1,6 @@
 import { inject } from '@angular/core'
 import { CanActivateFn, RedirectCommand, Router } from '@angular/router'
-import { map } from 'rxjs'
+import { catchError, map, of } from 'rxjs'
 import { Auth } from '../../services/auth/auth'
 
 export const authGuard: CanActivateFn = (route, state) => {
@@ -9,11 +9,10 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   return authService.isAuthenticated.pipe(
     map((res) => {
-      if (!res.status) {
-        return new RedirectCommand(router.parseUrl('/login'))
-      }
-
       return true
+    }),
+    catchError(() => {
+      return of(new RedirectCommand(router.parseUrl('/login')))
     }),
   )
 }
