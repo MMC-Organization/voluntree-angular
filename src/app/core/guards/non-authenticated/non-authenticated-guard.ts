@@ -1,17 +1,19 @@
-
 import { inject } from '@angular/core'
 import { CanActivateFn, RedirectCommand, Router } from '@angular/router'
+import { catchError, map, of } from 'rxjs'
 import { Auth } from '../../services/auth/auth'
 
-export const nonAuthenticatedGuard: CanActivateFn = async (route, state) => {
+export const nonAuthenticatedGuard: CanActivateFn = (route, state) => {
   const authService = inject(Auth)
   const router = inject(Router)
 
-  const res = await authService.isAuthenticated()
-
-  if (res) {
-    return new RedirectCommand(router.parseUrl('/home'))
-  }
-
-  return true
+  return authService.isAuthenticated.pipe(
+    map((res) => {
+      console.log(res)
+      return new RedirectCommand(router.parseUrl('/home'))
+    }),
+    catchError((err) => {
+      return of(true)
+    }),
+  )
 }
