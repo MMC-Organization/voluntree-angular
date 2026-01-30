@@ -162,7 +162,7 @@ export class Ong {
 
     this.loading.set(true)
 
-    this.#auth
+    const observable = await this.#auth
       .signupOrganization({
         email: formData.email!,
         password: formData.password!,
@@ -174,13 +174,15 @@ export class Ong {
         cep: formData.cep!,
         number: formData.number!,
       })
+
+    observable
       .pipe(
         finalize(() => {
           this.loading.set(false)
         }),
       )
       .subscribe({
-        next: (res) => {
+        next: (res: any) => {
           this.successMessage.set('Cadastro realizado com sucesso! Redirecionando...')
           setTimeout(() => {
             this.#router.navigate(['/login'])

@@ -34,12 +34,13 @@ export class SearchComponent {
   })
 
   constructor() {
-    this.activityService.getAllActivities().then(({ data, error }) => {
+    this.activityService.getUpcomingActivities().then(({ data, error }) => {
       if (error) {
-        this.errorMsg.set(error.message)
+        this.errorMsg.set(error?.message || 'Erro ao carregar atividades')
+        return
       }
 
-      this.activities.set(data as ActivityDetail[])
+      this.activities.set(data ?? [])
     })
   }
 
