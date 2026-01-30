@@ -4,8 +4,10 @@ export interface AuthState {
 }
 
 export interface AuthResponse {
-  authenticated: boolean
-  message: string
+  token: string
+  authenticated?: boolean
+  message?: string
+
 }
 
 export interface UserLogin {
