@@ -10,6 +10,7 @@ import { tap } from 'rxjs/internal/operators/tap'
 export class Auth {
   #http = inject(HttpClient)
 
+  private apiUrl = `${environment.apiUrl}/api/auth`
   currentUser = signal<any>(this.getUserFromStorage());
   
   get isAuthenticated() {
@@ -21,14 +22,19 @@ export class Auth {
   }
 
   login(loginData: UserLogin) {
-    return this.#http.post<AuthResponse>(`${environment.apiUrl}/api/auth/login`, loginData).pipe(
+    return this.#http.post<AuthResponse>(`${this.apiUrl}/login`, loginData).pipe(
       tap((response) => {
        
         if (response.token) {
           localStorage.setItem('access_token', response.token);
 
           
-          const user = { email: loginData.email, ...response };
+          const user = { 
+            id: response.id,
+            name: response.name,
+            userType: response.userType,
+            email: loginData.email
+          };
           localStorage.setItem('user_data', JSON.stringify(user));
           
           
@@ -46,14 +52,14 @@ export class Auth {
   }
 
   signupOrganization(signupData: OrganizationSignup) {
-    return this.#http.post(`${environment.apiUrl}/auth/register`, { 
+    return this.#http.post(`${this.apiUrl}/signup/organization`, { 
       ...signupData, 
       userType: 'ORGANIZATION'
         })
   }
 
   signupVolunteer(signupData: VolunteerSignup) {
-    return this.#http.post(`${environment.apiUrl}auth/register`, { 
+    return this.#http.post(`${this.apiUrl}/signup/volunteer`, { 
       ...signupData, 
       userType: 'VOLUNTEER' 
     })

@@ -4,6 +4,9 @@ export interface AuthState {
 }
 
 export interface AuthResponse {
+  userType: 'VOLUNTEER' | 'ORGANIZATION' //checar isso aqui 
+  id: number
+  name: string
   token: string
   authenticated?: boolean
   message?: string
