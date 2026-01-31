@@ -27,19 +27,12 @@ export class OngDashboard {
   }
 
   private async loadActivities() {
-    const { data: userData } = await this.authService.getUser()
-    if (!userData?.user?.id) {
-      this.loading.set(false)
-      this.errorMsg.set('Erro ao carregar usuário')
-      return
-    }
-
-    const { data, error } = await this.activityService.getActivitiesByOrganization(userData.user.id)
+    const { data, error } = await this.activityService.getMyActivities()
     
     this.loading.set(false)
     
     if (error) {
-      this.errorMsg.set(error.message)
+      this.errorMsg.set(error?.message || 'Erro ao carregar atividades')
       return
     }
 

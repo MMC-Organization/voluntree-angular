@@ -1,129 +1,181 @@
 import { Injectable, inject } from '@angular/core'
-import { Supabase } from './database/supabase'
-import { ActivityCreation, ActivityDetail } from '../models/activity.model'
+import { HttpClient, HttpParams } from '@angular/common/http'
+import { ActivityCreation, ActivityDetail, Activity } from '../models/activity.model'
 import { LocationService } from './location'
 import { firstValueFrom } from 'rxjs'
+import { environment } from '@/environments/environment'
 
 @Injectable({
   providedIn: 'root',
 })
 export class ActivityService {
-  private supabase = inject(Supabase).client
+  private http = inject(HttpClient)
   private locationService = inject(LocationService)
 
-  async getAllActivities() {
-    const { data, error } = await this.supabase.from('activity').select('*')
-    
-    if (error || !data) {
-      return {error}
+  private async fetchCsrfToken(): Promise<string | null> {
+    try {
+      const res: any = await firstValueFrom(this.http.get(`${environment.apiUrl}/api/auth/csrf`, { withCredentials: true }))
+      return res?.token ?? null
+    } catch {
+      return null
     }
-
-     const detailedActivities: ActivityDetail[] = await Promise.all(data.map(async activity => {
-        const address = await firstValueFrom(this.locationService.getAddressByCep(activity.cep))
-
-        return {...activity, city: address.localidade, state: address.uf}
-      })
-     )
-    
-    return {data: detailedActivities}
   }
 
-  async getActivitiesByOrganization(organizationId: string) {
-    const { data, error } = await this.supabase
-      .from('activity')
-      .select('*')
-      .eq('organization_id', organizationId)
-    
-    if (error || !data) {
+  async getAllActivities(page = 0, size = 100) {
+    try {
+      const params = new HttpParams().set('page', String(page)).set('size', String(size))
+      const res: any = await firstValueFrom(this.http.get<any>(`${environment.apiUrl}/api/activity`, { params, withCredentials: true }))
+
+      const items: Activity[] = res?.content ?? []
+
+      const detailedActivities: ActivityDetail[] = await Promise.all(
+        items.map(async (activity) => {
+          try {
+            const address = await firstValueFrom(this.locationService.getAddressByCep(activity.cep))
+            return { ...activity, city: address.localidade, state: address.uf, date: activity.activityDate }
+          } catch {
+            return { ...activity, date: activity.activityDate }
+          }
+        })
+      )
+
+      return { data: detailedActivities }
+    } catch (error: any) {
       return { error }
     }
-
-    const detailedActivities: ActivityDetail[] = await Promise.all(
-      data.map(async activity => {
-        const address = await firstValueFrom(this.locationService.getAddressByCep(activity.cep))
-        return { ...activity, city: address.localidade, state: address.uf }
-      })
-    )
-    
-    return { data: detailedActivities }
   }
 
-  createActivity(activity: ActivityCreation) {
-    return this.supabase.from('activity').insert({
-      ...activity,
-      organizationId: undefined,
-      organization_id: activity.organizationId,
-    })
-  }
+  async getActivitiesByOrganization(organizationId: string | number) {
+    try {
+      const res: any = await firstValueFrom(this.http.get<any>(`${environment.apiUrl}/api/activity/organization/${organizationId}`, { withCredentials: true }))
+      const items: Activity[] = res?.content ?? []
 
-  // 
-  async signupToActivity(activityId: string | number, volunteerId: string) {
-    const activityIdNumeric = typeof activityId === 'string' ? Number(activityId) : activityId
+      const detailedActivities: ActivityDetail[] = await Promise.all(
+        items.map(async (activity) => {
+          try {
+            const address = await firstValueFrom(this.locationService.getAddressByCep(activity.cep))
+            return { ...activity, city: address.localidade, state: address.uf, date: activity.activityDate }
+          } catch {
+            return { ...activity, date: activity.activityDate }
+          }
+        })
+      )
 
-    if (Number.isNaN(activityIdNumeric)) {
-      return { error: { message: 'ID da atividade inválido.' } }
-    }
-    const { data: existing, error: selErr } = await this.supabase
-      .from('signup')
-      .select('volunteer_id')
-      .eq('activity_id', activityIdNumeric)
-      .eq('volunteer_id', volunteerId)
-      .maybeSingle()
-
-    if (selErr) {
-      return { error: selErr }
-    }
-
-    if (existing) {
-      return { error: { message: 'Você já está inscrito nessa atividade.' } }
-    }
-
-    //inscri naa signup
-    const insert = await this.supabase.from('signup').insert({
-      volunteer_id: volunteerId,
-      activity_id: activityIdNumeric,
-    })
-
-    return insert
-  }
-  async getVolunteerActivities(volunteerId: string) {
-    const { data, error } = await this.supabase
-      .from('signup')
-      .select('activity(*)')
-      .eq('volunteer_id', volunteerId)
-
-    if (error || !data) {
+      return { data: detailedActivities }
+    } catch (error: any) {
       return { error }
     }
-
-   
-    const activities = data
-      .map((item: any) => item.activity)
-      .filter(Boolean)
-
-    const detailedActivities: ActivityDetail[] = await Promise.all(
-      activities.map(async (activity: any) => {
-        const address = await firstValueFrom(this.locationService.getAddressByCep(activity.cep))
-        return { ...activity, city: address.localidade, state: address.uf }
-      })
-    )
-
-    return { data: detailedActivities }
   }
 
-  
-  async unsubscribeFromActivity(activityId: string | number, volunteerId: string) {
-    const activityIdNumeric = typeof activityId === 'string' ? Number(activityId) : activityId
+  async createActivity(activity: ActivityCreation) {
+    try {
+      const token = await this.fetchCsrfToken()
+      const headers: any = {}
+      if (token) headers['X-CSRF-TOKEN'] = token
 
-    if (Number.isNaN(activityIdNumeric)) {
-      return { error: { message: 'ID da atividade inválido.' } }
+      const data = await firstValueFrom(
+        this.http.post(`${environment.apiUrl}/api/activity`, activity, { 
+          withCredentials: true,
+          headers 
+        })
+      )
+      return { data, error: null }
+    } catch (error: any) {
+      return { data: null, error }
     }
+  }
 
-    const del = await this.supabase
-      .from('signup')
-      .delete()
-      .match({ activity_id: activityIdNumeric, volunteer_id: volunteerId })
+  async signupToActivity(activityId: string | number, _volunteerId?: string) {
+    try {
+      const res = await firstValueFrom(this.http.post(`${environment.apiUrl}/api/registration/activity/${activityId}`, null, { withCredentials: true }))
+      return { data: res }
+    } catch (error: any) {
+      return { error }
+    }
+  }
 
-    return del
+  async getVolunteerActivities(_volunteerId?: string) {
+    try {
+      const regs: any[] = await firstValueFrom(this.http.get<any[]>(`${environment.apiUrl}/api/registration/my`, { withCredentials: true }))
+
+      const activitiesWithNull = await Promise.all(
+        regs.map(async (reg) => {
+          try {
+            const act: any = await firstValueFrom(
+              this.http.get(`${environment.apiUrl}/api/activity/${reg.activityId}`, { withCredentials: true })
+            )
+            const address = await firstValueFrom(this.locationService.getAddressByCep(act.cep))
+            return { ...act, city: address.localidade, state: address.uf, date: act.activityDate } as Activity | null
+          } catch {
+            return null
+          }
+        })
+      )
+
+      const activities: Activity[] = activitiesWithNull.filter(Boolean) as Activity[]
+
+      const detailedActivities: ActivityDetail[] = activities.map((a) => ({ ...a, date: a.activityDate }))
+
+      return { data: detailedActivities }
+    } catch (error: any) {
+      return { error }
+    }
+  }
+
+  async unsubscribeFromActivity(activityId: string | number, _volunteerId?: string) {
+    try {
+      await firstValueFrom(this.http.delete(`${environment.apiUrl}/api/registration/activity/${activityId}`, { withCredentials: true }))
+      return { data: true }
+    } catch (error: any) {
+      return { error }
+    }
+  }
+
+  async getUpcomingActivities(page = 0, size = 100) {
+    try {
+      const params = new HttpParams().set('page', String(page)).set('size', String(size))
+      const res: any = await firstValueFrom(this.http.get<any>(`${environment.apiUrl}/api/activity/upcoming`, { params, withCredentials: true }))
+
+      const items: Activity[] = res?.content ?? []
+
+      const detailedActivities: ActivityDetail[] = await Promise.all(
+        items.map(async (activity) => {
+          try {
+            const address = await firstValueFrom(this.locationService.getAddressByCep(activity.cep))
+            return { ...activity, city: address.localidade, state: address.uf, date: activity.activityDate }
+          } catch {
+            return { ...activity, date: activity.activityDate }
+          }
+        })
+      )
+
+      return { data: detailedActivities }
+    } catch (error: any) {
+      return { error }
+    }
+  }
+
+  async getMyActivities(page = 0, size = 100) {
+    try {
+      const params = new HttpParams().set('page', String(page)).set('size', String(size))
+      const res: any = await firstValueFrom(this.http.get<any>(`${environment.apiUrl}/api/activity/my-activities`, { params, withCredentials: true }))
+
+      const items: Activity[] = res?.content ?? []
+
+      const detailedActivities: ActivityDetail[] = await Promise.all(
+        items.map(async (activity) => {
+          try {
+            const address = await firstValueFrom(this.locationService.getAddressByCep(activity.cep))
+            return { ...activity, city: address.localidade, state: address.uf, date: activity.activityDate }
+          } catch {
+            return { ...activity, date: activity.activityDate }
+          }
+        })
+      )
+
+      return { data: detailedActivities }
+    } catch (error: any) {
+      return { error }
+    }
   }
 }

@@ -47,15 +47,15 @@
       <label class="font-semibold text-gray-700">Data</label>
       <input
         type="date"
-        formControlName="date"
+        formControlName="activityDate"
         dateValidator
         class="w-full rounded-lg border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-green-300 outline-none"
       />
-      @if (submitted() && form.get('date')?.invalid) {
-        @if (form.get('date')?.errors?.['required']) {
+      @if (submitted() && form.get('activityDate')?.invalid) {
+        @if (form.get('activityDate')?.errors?.['required']) {
       <span class="text-red-500 text-sm">Data é obrigatória.</span>
       }
-        @if (form.get('date')?.errors?.['invalidDate']) {
+        @if (form.get('activityDate')?.errors?.['invalidDate']) {
       <span class="text-red-500 text-sm">Deve ser hoje ou posterior.</span>
       }}
     </div>

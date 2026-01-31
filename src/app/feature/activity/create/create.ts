@@ -30,7 +30,7 @@ export class Create {
   form = this.fb.nonNullable.group({
     name: ['', Validators.required],
     description: ['', Validators.required],
-    date: ['', Validators.required],
+    activityDate: ['', Validators.required],
     cep: ['', [Validators.required, Validators.minLength(8)]],
     number: ['', Validators.required],
     spots: [0, [Validators.required, Validators.min(1)]],
@@ -69,33 +69,30 @@ export class Create {
 
     const { city, state, ...formValue } = this.form.getRawValue()
 
-    const organizationId = await this.authService.getUser().then(({ data, error }) => {
-      if (data && !error) return data.user?.id
+    const userRes = await this.authService.getUser()
+    const organizationId = userRes.data?.user?.id
 
-      if (error) {
-        this.errorMessage.set(error.message)
-      }
-
-      return null
-    })
-
-    if (!organizationId) {
+    if (userRes.error || !organizationId) {
+      this.errorMessage.set(userRes.error?.message || 'Erro ao obter usuário. Faça login novamente.')
+      this.isLoading.set(false)
       return
     }
 
-    this.activityService
-      .createActivity({ ...formValue, organizationId })
-      .then(({ data, error }) => {
-        this.isLoading.set(false)
+    try {
+      const res: any = await this.activityService.createActivity({ ...formValue, organizationId })
+      this.isLoading.set(false)
 
-        if (error) {
-          this.errorMessage.set(error.message)
-          return
-        }
+      if (res.error) {
+        this.errorMessage.set(res.error.message || 'Erro ao criar atividade')
+        return
+      }
 
-        alert('Atividade criada')
-        this.router.navigate(['/ong'])
-      })
+      alert('Atividade criada')
+      this.router.navigate(['/ong'])
+    } catch (err: any) {
+      this.isLoading.set(false)
+      this.errorMessage.set(err?.message || 'Erro inesperado ao criar atividade')
+    }
 
     this.form.get('city')?.setValue('')
     this.form.get('state')?.setValue('')

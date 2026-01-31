@@ -53,12 +53,13 @@ export class VolunteerSubscriptions {
     }
   }
 
-  formatDate(dateString: string): string {
+  formatDate(dateString?: string): string {
+    if (!dateString) return '-'
     const date = new Date(dateString)
     return date.toLocaleDateString('pt-BR')
   }
 
-  async unsubscribe(activityId: string) {
+  async unsubscribe(activityId: string | number) {
     if (!confirm('Deseja realmente se desinscrever desta atividade?')) return
 
     this.loading.set(true)
@@ -79,8 +80,7 @@ export class VolunteerSubscriptions {
         return
       }
 
-      
-      this.activities.update(curr => curr.filter(a => a.id !== activityId))
+      this.activities.update((curr) => curr.filter((a) => String(a.id) !== String(activityId)))
       alert('Desinscrição realizada com sucesso!')
     } catch (err) {
       console.error(err)
