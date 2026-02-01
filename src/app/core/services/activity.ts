@@ -69,18 +69,54 @@ export class ActivityService {
 
   async createActivity(activity: ActivityCreation) {
     try {
-      const token = await this.fetchCsrfToken()
-      const headers: any = {}
-      if (token) headers['X-CSRF-TOKEN'] = token
-
       const data = await firstValueFrom(
-        this.http.post(`${environment.apiUrl}/api/activity`, activity, { 
-          withCredentials: true,
-          headers 
-        })
+        this.http.post(`${environment.apiUrl}/api/activity`, activity)
       )
       return { data, error: null }
     } catch (error: any) {
+      console.error('Erro ao criar atividade:', error)
+      return { data: null, error }
+    }
+  }
+
+  async getActivityById(id: string | number) {
+    try {
+      const activity: any = await firstValueFrom(
+        this.http.get(`${environment.apiUrl}/api/activity/${id}`)
+      )
+      
+      try {
+        const address = await firstValueFrom(this.locationService.getAddressByCep(activity.cep))
+        return { data: { ...activity, city: address.localidade, state: address.uf } as ActivityDetail, error: null }
+      } catch {
+        return { data: activity as ActivityDetail, error: null }
+      }
+    } catch (error: any) {
+      console.error('Erro ao buscar atividade:', error)
+      return { data: null, error }
+    }
+  }
+
+  async updateActivity(id: string | number, activity: ActivityCreation) {
+    try {
+      const data = await firstValueFrom(
+        this.http.put(`${environment.apiUrl}/api/activity/${id}`, activity)
+      )
+      return { data, error: null }
+    } catch (error: any) {
+      console.error('Erro ao atualizar atividade:', error)
+      return { data: null, error }
+    }
+  }
+
+  async deleteActivity(id: string | number) {
+    try {
+      await firstValueFrom(
+        this.http.delete(`${environment.apiUrl}/api/activity/${id}`)
+      )
+      return { data: true, error: null }
+    } catch (error: any) {
+      console.error('Erro ao deletar atividade:', error)
       return { data: null, error }
     }
   }

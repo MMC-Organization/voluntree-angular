@@ -1,6 +1,6 @@
 import { Directive, inject } from '@angular/core'
 import { LocationService } from '../../services/location'
-import { catchError, map, Observable, of } from 'rxjs'
+import { catchError, map, Observable, of, timeout } from 'rxjs'
 import {
   AbstractControl,
   AsyncValidator,
@@ -16,18 +16,30 @@ export class CepValidator implements AsyncValidator {
   #locationService = inject(LocationService)
 
   validate(control: AbstractControl): Observable<ValidationErrors | null> {
-    let error = false
     const cep = control.value
 
     if (!cep) return of(null)
-    if (!/^\d{8}$/.test(cep)) return of({ invalid: true })
+    
+    // Remove caracteres não numéricos
+    const cleanCep = String(cep).replace(/\D/g, '')
+    
+    // Verifica se tem 8 dígitos
+    if (cleanCep.length !== 8) return of({ invalid: true })
 
-    return this.#locationService.getAddressByCep(cep).pipe(
+    return this.#locationService.getAddressByCep(cleanCep).pipe(
+      timeout(5000), // Timeout de 5 segundos
       map((value) => {
-        if (value.erro) return { invalid: true }
+        // ViaCEP retorna { erro: true } quando o CEP não existe
+        if (value.erro === 'true' || !value.cep) {
+          return { invalid: true }
+        }
         return null
       }),
-      catchError(() => of({ invalid: true }))
+      catchError((error) => {
+        console.error('Erro ao validar CEP:', error)
+        // Em caso de erro de rede, não bloqueia o formulário
+        return of(null)
+      })
     )
   }
 }

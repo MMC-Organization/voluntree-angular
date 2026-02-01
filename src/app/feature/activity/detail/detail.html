@@ -1,0 +1,102 @@
+<div class="w-full max-w-4xl mx-auto p-6">
+  @if (loading()) {
+  <div class="flex justify-center items-center h-64">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+  </div>
+  } @else if (errorMessage()) {
+  <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+    <p class="font-bold">Erro!</p>
+    <span class="block sm:inline">{{ errorMessage() }}</span>
+  </div>
+  } @else if (activity()) {
+  <div class="bg-white rounded-2xl shadow-lg border border-green-100 overflow-hidden">
+    <!-- Cabeçalho -->
+    <div class="bg-gradient-to-r from-green-600 to-green-700 text-white p-6">
+      <div class="flex justify-between items-start">
+        <div>
+          <h1 class="text-3xl font-bold mb-2">{{ activity()?.name }}</h1>
+          <p class="text-green-100">{{ activity()?.organizationName }}</p>
+        </div>
+        @if (!activity()?.canceled) {
+        <div class="flex gap-2">
+          <button
+            (click)="goToEdit()"
+            class="bg-white text-green-700 px-4 py-2 rounded-lg hover:bg-green-50 transition-colors font-semibold"
+          >
+            ✏️ Editar
+          </button>
+          <button
+            (click)="deleteActivity()"
+            class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-semibold"
+          >
+            🗑️ Excluir
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="p-6 space-y-6">
+      <!-- Status -->
+      @if (activity()?.canceled) {
+      <div class="bg-red-100 border-l-4 border-red-600 p-4 rounded">
+        <p class="text-red-800 font-semibold">⚠️ Esta atividade foi cancelada</p>
+      </div>
+      }
+
+      <!-- Descrição -->
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Descrição</h2>
+        <p class="text-gray-600 whitespace-pre-wrap">{{ activity()?.description || 'Sem descrição' }}</p>
+      </div>
+
+      <!-- Informações -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <p class="text-sm text-gray-600 mb-1">📅 Data e Hora</p>
+          <p class="text-lg font-semibold text-gray-800">
+            {{ formatDate(activity()?.activityDate || '') }}
+          </p>
+        </div>
+
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <p class="text-sm text-gray-600 mb-1">👥 Vagas Disponíveis</p>
+          <p class="text-lg font-semibold text-gray-800">{{ activity()?.spots }} vagas</p>
+        </div>
+
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <p class="text-sm text-gray-600 mb-1">📍 CEP</p>
+          <p class="text-lg font-semibold text-gray-800">
+            {{ formatCep(activity()?.cep || '') }}
+          </p>
+        </div>
+
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <p class="text-sm text-gray-600 mb-1">🏠 Número</p>
+          <p class="text-lg font-semibold text-gray-800">{{ activity()?.number || 'S/N' }}</p>
+        </div>
+
+        @if (activity()?.city && activity()?.state) {
+        <div class="bg-gray-50 p-4 rounded-lg md:col-span-2">
+          <p class="text-sm text-gray-600 mb-1">🌍 Localização</p>
+          <p class="text-lg font-semibold text-gray-800">
+            {{ activity()?.city }} - {{ activity()?.state }}
+          </p>
+        </div>
+        }
+      </div>
+
+      <!-- Ações -->
+      <div class="flex gap-4 pt-4 border-t border-gray-200">
+        <button
+          routerLink="/ong"
+          class="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
+        >
+          ← Voltar
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+</div>

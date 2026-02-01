@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { Auth } from '../../../core/services/auth/auth'
-import { Supabase } from '../../../core/services/database/supabase'
 
 interface VolunteerProfile {
   id: string
@@ -21,7 +20,6 @@ interface VolunteerProfile {
 })
 export class VolProfile {
   private authService = inject(Auth)
-  private supabase = inject(Supabase).client
 
   profile = signal<VolunteerProfile | null>(null)
   loading = signal(true)
@@ -40,36 +38,9 @@ export class VolProfile {
         return
       }
 
-      const { data: volData, error: volError } = await this.supabase
-        .from('volunteer')
-        .select('*')
-        .eq('id', userData.user.id)
-        .single()
-
-      if (volError || !volData) {
-        this.errorMsg.set('Erro ao carregar dados da organização')
-        this.loading.set(false)
-        return
-      }
-
-      const { data: emailData } = await this.supabase
-        .from('email')
-        .select('email')
-        .eq('volunteer_id', userData.user.id)
-        .single()
-
-      const { data: phoneData } = await this.supabase
-        .from('phone_number')
-        .select('phone_number')
-        .eq('volunteer_id', userData.user.id)
-        .single()
-
-      this.profile.set({
-        ...volData,
-        email: emailData?.email || userData.user.email,
-        phone: phoneData?.phone_number,
-      })
-
+      // TODO: Implementar busca de perfil via API REST
+      // Por enquanto, apenas mostra mensagem
+      this.errorMsg.set('Funcionalidade de perfil será implementada com a API REST')
       this.loading.set(false)
     } catch (error) {
       this.errorMsg.set('Erro ao carregar perfil')

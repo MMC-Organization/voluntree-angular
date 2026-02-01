@@ -39,11 +39,26 @@ export class Login {
 
     const data = this.loginForm.getRawValue()
 
+    // Primeiro, faz logout silencioso para limpar qualquer sessão anterior
+    this.authService.logout().subscribe({
+      complete: () => {
+        // Depois de fazer logout (ou se falhar), tenta fazer login
+        this.performLogin(data)
+      },
+      error: () => {
+        // Mesmo se o logout falhar, tenta fazer login
+        this.performLogin(data)
+      }
+    })
+  }
+
+  private performLogin(data: { email: string; password: string }) {
     this.authService.login(data).subscribe({
       next: (res) => {
         if (!res.body?.authenticated) {
           this.authError.set(res.body?.message ?? 'Erro na autenticação. Tente novamente.')
           this.isLoading.set(false)
+          return
         }
 
         this.router.navigate(['/home'])

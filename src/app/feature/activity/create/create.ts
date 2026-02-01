@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 import { Router, RouterModule } from '@angular/router'
 import { ActivityService } from '../../../core/services/activity'
-import { CepValidator } from '../../../core/validators/cepValidator/cep-validator'
 import { debounceTime } from 'rxjs'
 import { LocationService } from '../../../core/services/location'
 import { Auth } from '../../../core/services/auth/auth'
@@ -12,7 +11,7 @@ import { DateValidator } from "../../../core/validators/dateValidator/date-valid
 @Component({
   selector: 'app-create-activity',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, CepValidator, DateValidator],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, DateValidator],
   templateUrl: './create.html',
   styleUrl: './create.css',
 })
@@ -31,7 +30,7 @@ export class Create {
     name: ['', Validators.required],
     description: ['', Validators.required],
     activityDate: ['', Validators.required],
-    cep: ['', [Validators.required, Validators.minLength(8)]],
+    cep: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(8)]],
     number: ['', Validators.required],
     spots: [0, [Validators.required, Validators.min(1)]],
     city: [{ value: '', disabled: true }],
@@ -67,19 +66,16 @@ export class Create {
 
     this.isLoading.set(true)
 
-    const { city, state, ...formValue } = this.form.getRawValue()
-
-    const userRes = await this.authService.getUser()
-    const organizationId = userRes.data?.user?.id
-
-    if (userRes.error || !organizationId) {
-      this.errorMessage.set(userRes.error?.message || 'Erro ao obter usuário. Faça login novamente.')
-      this.isLoading.set(false)
-      return
-    }
+    const { city, state, activityDate, ...formValue } = this.form.getRawValue()
+    
+    // Adiciona hora padrão (09:00) à data para criar LocalDateTime
+    const activityDateTime = activityDate ? `${activityDate}T09:00:00` : ''
 
     try {
-      const res: any = await this.activityService.createActivity({ ...formValue, organizationId })
+      const res: any = await this.activityService.createActivity({ 
+        ...formValue, 
+        activityDate: activityDateTime 
+      })
       this.isLoading.set(false)
 
       if (res.error) {
@@ -87,14 +83,11 @@ export class Create {
         return
       }
 
-      alert('Atividade criada')
+      alert('Atividade criada com sucesso!')
       this.router.navigate(['/ong'])
     } catch (err: any) {
       this.isLoading.set(false)
       this.errorMessage.set(err?.message || 'Erro inesperado ao criar atividade')
     }
-
-    this.form.get('city')?.setValue('')
-    this.form.get('state')?.setValue('')
   }
 }
