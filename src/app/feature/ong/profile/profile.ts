@@ -1,17 +1,20 @@
 import { Component, inject, signal } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { Auth } from '../../../core/services/auth/auth'
+import { HttpClient } from '@angular/common/http'
+import { environment } from '@/environments/environment'
+import { firstValueFrom } from 'rxjs'
 
 interface OrganizationProfile {
   id: string
   cnpj: string
   name: string
-  company_name: string
+  companyName: string
   cep: string
   number: string | null
   cause: string
   email?: string
-  phone?: string
+  phoneNumber?: string
 }
 
 @Component({
@@ -23,6 +26,7 @@ interface OrganizationProfile {
 })
 export class OngProfile {
   private authService = inject(Auth)
+  private http = inject(HttpClient)
 
   profile = signal<OrganizationProfile | null>(null)
   loading = signal(true)
@@ -34,19 +38,15 @@ export class OngProfile {
 
   private async loadProfile() {
     try {
-      const { data: userData } = await this.authService.getUser()
-      if (!userData?.user?.id) {
-        this.errorMsg.set('Usuário não encontrado')
-        this.loading.set(false)
-        return
-      }
-
-      // TODO: Implementar busca de perfil via API REST
-      // Por enquanto, apenas mostra mensagem
-      this.errorMsg.set('Funcionalidade de perfil será implementada com a API REST')
+      const profileData = await firstValueFrom(
+        this.http.get<OrganizationProfile>(`${environment.apiUrl}/api/user/me`)
+      )
+      
+      this.profile.set(profileData)
       this.loading.set(false)
-    } catch (error) {
-      this.errorMsg.set('Erro ao carregar perfil')
+    } catch (error: any) {
+      console.error('Erro ao carregar perfil:', error)
+      this.errorMsg.set('Erro ao carregar perfil. Tente novamente.')
       this.loading.set(false)
     }
   }

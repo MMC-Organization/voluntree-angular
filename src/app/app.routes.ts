@@ -84,14 +84,14 @@ export const routes: Routes = [
               import('./feature/activity/create/create').then((m) => m.Create),
           },
           {
-            path: 'activity/:id',
-            loadComponent: () =>
-              import('./feature/activity/detail/detail').then((m) => m.ActivityDetailComponent),
-          },
-          {
             path: 'activity/edit/:id',
             loadComponent: () =>
               import('./feature/activity/edit/edit').then((m) => m.EditActivityComponent),
+          },
+          {
+            path: 'activity/:id',
+            loadComponent: () =>
+              import('./feature/activity/detail/detail').then((m) => m.ActivityDetailComponent),
           },
         ],
       },

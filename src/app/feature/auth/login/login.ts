@@ -39,17 +39,8 @@ export class Login {
 
     const data = this.loginForm.getRawValue()
 
-    // Primeiro, faz logout silencioso para limpar qualquer sessão anterior
-    this.authService.logout().subscribe({
-      complete: () => {
-        // Depois de fazer logout (ou se falhar), tenta fazer login
-        this.performLogin(data)
-      },
-      error: () => {
-        // Mesmo se o logout falhar, tenta fazer login
-        this.performLogin(data)
-      }
-    })
+    // Tenta fazer login diretamente
+    this.performLogin(data)
   }
 
   private performLogin(data: { email: string; password: string }) {

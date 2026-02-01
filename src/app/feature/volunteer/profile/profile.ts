@@ -1,18 +1,22 @@
 import { Component, inject, signal } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { Auth } from '../../../core/services/auth/auth'
+import { HttpClient } from '@angular/common/http'
+import { environment } from '@/environments/environment'
+import { firstValueFrom } from 'rxjs'
 
 interface VolunteerProfile {
   id: string
   name: string
+  cpf: string
   cep: string
   number: string | null
   email?: string
-  phone?: string
+  phoneNumber?: string
 }
 
 @Component({
-  selector: 'app-ong-profile',
+  selector: 'app-volunteer-profile',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './profile.html',
@@ -20,6 +24,7 @@ interface VolunteerProfile {
 })
 export class VolProfile {
   private authService = inject(Auth)
+  private http = inject(HttpClient)
 
   profile = signal<VolunteerProfile | null>(null)
   loading = signal(true)
@@ -31,19 +36,15 @@ export class VolProfile {
 
   private async loadProfile() {
     try {
-      const { data: userData } = await this.authService.getUser()
-      if (!userData?.user?.id) {
-        this.errorMsg.set('Usuário não encontrado')
-        this.loading.set(false)
-        return
-      }
-
-      // TODO: Implementar busca de perfil via API REST
-      // Por enquanto, apenas mostra mensagem
-      this.errorMsg.set('Funcionalidade de perfil será implementada com a API REST')
+      const profileData = await firstValueFrom(
+        this.http.get<VolunteerProfile>(`${environment.apiUrl}/api/user/me`)
+      )
+      
+      this.profile.set(profileData)
       this.loading.set(false)
-    } catch (error) {
-      this.errorMsg.set('Erro ao carregar perfil')
+    } catch (error: any) {
+      console.error('Erro ao carregar perfil:', error)
+      this.errorMsg.set('Erro ao carregar perfil. Tente novamente.')
       this.loading.set(false)
     }
   }
