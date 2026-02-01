@@ -2,6 +2,8 @@ import { Routes } from '@angular/router'
 import { authGuard } from './core/guards/auth-guard/auth-guard'
 import { homeRedirectGuard } from './core/guards/home-redirect/home-redirect-guard'
 import { nonAuthenticatedGuard } from './core/guards/non-authenticated/non-authenticated-guard'
+import { organizationGuard } from './core/guards/organization/organization-guard'
+import { volunteerGuard } from './core/guards/volunteer/volunteer-guard'
 
 export const routes: Routes = [
   {
@@ -42,6 +44,7 @@ export const routes: Routes = [
       },
       {
         path: 'volunteer',
+        canActivate: [volunteerGuard],
         loadComponent: () =>
           import('./shared/layouts/volunteer-layout/volunteer-layout').then(
             (m) => m.VolunteerLayout
@@ -65,6 +68,7 @@ export const routes: Routes = [
       },
       {
         path: 'ong',
+        canActivate: [organizationGuard],
         loadComponent: () =>
           import('./shared/layouts/ong-layout/ong-layout').then((m) => m.OngLayout),
         children: [

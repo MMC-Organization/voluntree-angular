@@ -1,65 +1,165 @@
-<div class="min-h-screen bg-gray-50">
-  <div class="max-w-4xl mx-auto p-6">
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+  <div class="max-w-5xl mx-auto p-6">
     @if (loading()) {
-      <div class="flex justify-center py-20">
-        <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-100 border-t-green-600"></div>
+      <div class="flex flex-col items-center justify-center py-20">
+        <div class="animate-spin rounded-full h-16 w-16 border-4 border-green-100 border-t-green-600 mb-4"></div>
+        <p class="text-gray-500 font-medium">Carregando atividade...</p>
       </div>
     }
     @else if (errorMessage()) {
-      <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-        {{ errorMessage() }}
+      <div class="bg-white rounded-xl shadow-lg border-l-4 border-red-500 p-6 animate-fade-in">
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+            <span class="text-red-600 text-xl">⚠️</span>
+          </div>
+          <div>
+            <h3 class="text-red-800 font-semibold text-lg">Erro ao carregar</h3>
+            <p class="text-red-600 mt-1">{{ errorMessage() }}</p>
+          </div>
+        </div>
       </div>
     }
     @else if (activity(); as act) {
-      <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-green-600 to-green-700 p-8 text-white">
-          <div class="flex justify-between items-start">
-            <div>
-              <h1 class="text-3xl font-bold mb-2">{{ act.name }}</h1>
-              <p class="text-green-100">{{ act.city }} - {{ act.state }}</p>
+      <div class="bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in">
+        <!-- Header com status -->
+        <div class="relative bg-gradient-to-r from-green-600 to-green-700 p-8 text-white">
+          <div class="absolute top-4 right-4">
+            @if (act.canceled) {
+              <span class="inline-flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg animate-pulse">
+                <span class="w-2 h-2 bg-white rounded-full"></span>
+                CANCELADA
+              </span>
+            } @else {
+              <span class="inline-flex items-center gap-2 bg-green-400 text-green-900 px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                <span class="w-2 h-2 bg-green-900 rounded-full animate-pulse"></span>
+                ATIVA
+              </span>
+            }
+          </div>
+          
+          <div class="pr-32">
+            <h1 class="text-4xl font-bold mb-3">{{ act.name }}</h1>
+            <div class="flex items-center gap-4 text-green-100">
+              <span class="flex items-center gap-2">
+                <span class="text-xl">📍</span>
+                {{ act.city }} - {{ act.state }}
+              </span>
+              <span class="flex items-center gap-2">
+                <span class="text-xl">🏢</span>
+                {{ act.organizationName }}
+              </span>
             </div>
-            <span class="bg-white/20 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
-              {{ formatCep(act.cep) }}
-            </span>
           </div>
         </div>
 
         <!-- Content -->
         <div class="p-8">
-          <p class="text-gray-700 text-lg leading-relaxed mb-8">{{ act.description }}</p>
+          <!-- Description -->
+          <div class="mb-8">
+            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Descrição</h2>
+            <p class="text-gray-700 text-lg leading-relaxed">{{ act.description }}</p>
+          </div>
 
-          <div class="grid grid-cols-2 gap-6 mb-8">
-            <div class="bg-green-50 p-5 rounded-lg border border-green-100">
-              <p class="text-xs text-green-700 font-medium uppercase tracking-wider mb-2">Data da Atividade</p>
-              <p class="text-gray-900 text-lg font-semibold">{{ formatDate(act.date) }}</p>
+          <!-- Info Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 hover:shadow-lg transition-all">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white text-xl">
+                  📅
+                </div>
+                <div>
+                  <p class="text-xs text-green-700 font-medium uppercase tracking-wider">Data</p>
+                  <p class="text-gray-900 text-lg font-bold">{{ formatDate(act.activityDate) }}</p>
+                </div>
+              </div>
             </div>
-            <div class="bg-green-50 p-5 rounded-lg border border-green-100">
-              <p class="text-xs text-green-700 font-medium uppercase tracking-wider mb-2">Vagas Disponíveis</p>
-              <p class="text-gray-900 text-lg font-semibold">{{ act.spots }}</p>
+
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 hover:shadow-lg transition-all">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white text-xl">
+                  👥
+                </div>
+                <div>
+                  <p class="text-xs text-blue-700 font-medium uppercase tracking-wider">Vagas</p>
+                  <p class="text-gray-900 text-lg font-bold">{{ act.spots }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border-2 border-purple-200 hover:shadow-lg transition-all">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white text-xl">
+                  📍
+                </div>
+                <div>
+                  <p class="text-xs text-purple-700 font-medium uppercase tracking-wider">Localização</p>
+                  <p class="text-gray-900 text-lg font-bold">{{ formatCep(act.cep) }}</p>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="flex gap-3">
-            <button
-              (click)="goToEdit()"
-              class="flex-1 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium shadow-sm"
-            >
-              ✏️ Editar Atividade
-            </button>
-            <button
-              (click)="deleteActivity()"
-              class="flex-1 py-3 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition font-medium"
-            >
-              🗑️ Excluir
-            </button>
-          </div>
+          @if (!act.canceled && isOwner()) {
+            <!-- Actions -->
+            <div class="flex gap-4">
+              <button
+                (click)="goToEdit()"
+                class="flex-1 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2"
+              >
+                <span class="text-xl">✏️</span>
+                Editar Atividade
+              </button>
+              <button
+                (click)="deleteActivity()"
+                class="flex-1 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2"
+              >
+                <span class="text-xl">🗑️</span>
+                Excluir Atividade
+              </button>
+            </div>
+          } @else if (act.canceled) {
+            <div class="bg-red-50 border-2 border-red-200 rounded-xl p-6 text-center">
+              <div class="text-4xl mb-2">⚠️</div>
+              <p class="text-red-800 font-semibold text-lg">Esta atividade foi cancelada</p>
+              <p class="text-red-600 mt-2">Não é possível editar ou realizar ações em atividades canceladas</p>
+            </div>
+          }
 
-          <a routerLink="/ong" class="block text-center mt-6 text-gray-500 hover:text-green-600 transition">
+          <button
+            (click)="goBack()"
+            class="w-full mt-6 py-3 border-2 border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition-all font-medium flex items-center justify-center gap-2"
+          >
             ← Voltar ao Dashboard
-          </a>
+          </button>
         </div>
       </div>
     }
   </div>
 </div>
+
+<!-- Toast Notification -->
+@if (showToast()) {
+  <div class="fixed bottom-6 right-6 z-50 animate-slide-up">
+    <div class="bg-white rounded-xl shadow-2xl border-l-4 p-6 min-w-[320px]"
+         [class.border-green-500]="toastType() === 'success'"
+         [class.border-red-500]="toastType() === 'error'">
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+             [class.bg-green-100]="toastType() === 'success'"
+             [class.bg-red-100]="toastType() === 'error'">
+          <span class="text-2xl">
+            {{ toastType() === 'success' ? '✅' : '❌' }}
+          </span>
+        </div>
+        <div class="flex-1">
+          <h4 class="font-bold text-lg"
+              [class.text-green-800]="toastType() === 'success'"
+              [class.text-red-800]="toastType() === 'error'">
+            {{ toastType() === 'success' ? 'Sucesso!' : 'Erro!' }}
+          </h4>
+          <p class="text-gray-600 mt-1">{{ toastMessage() }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+}

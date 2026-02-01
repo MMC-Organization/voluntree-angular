@@ -1,97 +1,143 @@
-<div class="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-  <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg">
-    <div class="bg-gradient-to-r from-green-600 to-green-700 p-6 rounded-t-xl">
-      <h1 class="text-2xl font-bold text-white">✨ Nova Atividade</h1>
-      <p class="text-green-100 text-sm mt-1">Crie uma nova oportunidade de voluntariado</p>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-6">
+  <div class="w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in">
+    <div class="bg-gradient-to-r from-green-600 to-green-700 p-8">
+      <div class="flex items-center gap-3 text-white">
+        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-2xl backdrop-blur-sm">
+          ✨
+        </div>
+        <div>
+          <h1 class="text-3xl font-bold">Nova Atividade</h1>
+          <p class="text-green-100 text-sm mt-1">Crie uma oportunidade de voluntariado</p>
+        </div>
+      </div>
     </div>
 
     <div class="p-8">
       @if (errorMessage()) {
-        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-          <p class="font-medium">{{ errorMessage() }}</p>
+        <div class="bg-red-50 border-l-4 border-red-500 p-5 rounded-lg mb-6 animate-shake">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">⚠️</span>
+            <div>
+              <h4 class="text-red-800 font-semibold">Erro</h4>
+              <p class="text-red-600 mt-1">{{ errorMessage() }}</p>
+            </div>
+          </div>
         </div>
       }
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-5">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Nome da Atividade</label>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">Nome da Atividade</label>
           <input
             type="text"
             formControlName="name"
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
             placeholder="Ex: Limpeza de praia"
           />
           @if (submitted() && form.get('name')?.invalid) {
-            <span class="text-red-500 text-xs mt-1 block">Campo obrigatório</span>
+            <p class="text-red-500 text-sm flex items-center gap-1">
+              <span>⚠️</span> Campo obrigatório
+            </p>
           }
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-gray-700">Descrição</label>
           <textarea
             formControlName="description"
             rows="4"
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition resize-none"
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all resize-none"
             placeholder="Descreva os detalhes da atividade..."
           ></textarea>
           @if (submitted() && form.get('description')?.invalid) {
-            <span class="text-red-500 text-xs mt-1 block">Campo obrigatório</span>
+            <p class="text-red-500 text-sm flex items-center gap-1">
+              <span>⚠️</span> Campo obrigatório
+            </p>
           }
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Data</label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">Data da Atividade</label>
             <input
               type="date"
               formControlName="activityDate"
-              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
             />
             @if (submitted() && form.get('activityDate')?.invalid) {
-              <span class="text-red-500 text-xs mt-1 block">Campo obrigatório</span>
+              <p class="text-red-500 text-sm flex items-center gap-1">
+                <span>⚠️</span> Campo obrigatório
+              </p>
             }
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Número de Vagas</label>
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">Número de Vagas</label>
             <input
               type="number"
               formControlName="spots"
-              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
               placeholder="10"
               min="1"
             />
             @if (submitted() && form.get('spots')?.invalid) {
-              <span class="text-red-500 text-xs mt-1 block">Campo obrigatório</span>
+              <p class="text-red-500 text-sm flex items-center gap-1">
+                <span>⚠️</span> Mínimo 1 vaga
+              </p>
             }
           </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">CEP</label>
-          <input
-            type="text"
-            formControlName="cep"
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
-            placeholder="00000-000"
-            maxlength="9"
-          />
-          @if (submitted() && form.get('cep')?.invalid) {
-            <span class="text-red-500 text-xs mt-1 block">Campo obrigatório</span>
-          }
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">CEP</label>
+            <input
+              type="text"
+              formControlName="cep"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+              placeholder="00000000"
+              maxlength="8"
+            />
+            @if (submitted() && form.get('cep')?.invalid) {
+              <p class="text-red-500 text-sm flex items-center gap-1">
+                <span>⚠️</span> 8 dígitos
+              </p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-700">Número</label>
+            <input
+              type="text"
+              formControlName="number"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+              placeholder="123"
+            />
+            @if (submitted() && form.get('number')?.invalid) {
+              <p class="text-red-500 text-sm flex items-center gap-1">
+                <span>⚠️</span> Campo obrigatório
+              </p>
+            }
+          </div>
         </div>
 
-        <div class="flex gap-3 pt-4">
+        <div class="flex gap-4 pt-4">
           <button
             type="submit"
             [disabled]="!form.valid || loading()"
-            class="flex-1 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+            class="flex-1 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all font-bold shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
           >
-            {{ loading() ? '⏳ Criando...' : 'Criar Atividade' }}
+            @if (loading()) {
+              <span class="animate-spin">⏳</span>
+              <span>Criando...</span>
+            } @else {
+              <span>✨</span>
+              <span>Criar Atividade</span>
+            }
           </button>
           <a
             routerLink="/ong"
-            class="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-center"
+            class="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all font-semibold text-center flex items-center justify-center"
           >
             Cancelar
           </a>

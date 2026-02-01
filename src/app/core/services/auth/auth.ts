@@ -36,17 +36,18 @@ export class Auth {
   }
 
   obtainCsrfToken() {
-    return this.#http.get(`${environment.apiUrl}/api/auth/csrf`)
+    return this.#http.get(`${environment.apiUrl}/api/auth/csrf`, { withCredentials: true })
   }
 
   login(loginData: UserLogin) {
     return this.#http.post<AuthResponse>(`${environment.apiUrl}/api/auth/login`, loginData, {
-      observe: 'response'
+      observe: 'response',
+      withCredentials: true
     })
   }
 
   logout() {
-    return this.#http.post(`${environment.apiUrl}/api/auth/logout`, null)
+    return this.#http.post(`${environment.apiUrl}/api/auth/logout`, null, { withCredentials: true })
   }
 
   signupOrganization(signupData: OrganizationSignup) {

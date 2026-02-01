@@ -1,8 +1,9 @@
-import { Component, input, inject, signal } from '@angular/core';
+import { Component, input, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivityDetail } from '../../../../core/models/activity.model';
 import { ActivityService } from '../../../../core/services/activity';
 import { Auth } from '../../../../core/services/auth/auth';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-activity',
@@ -15,11 +16,29 @@ export class Activity {
   organization = input.required<boolean>()
 
   private router = inject(Router)
-
   private activityService = inject(ActivityService)
   private auth = inject(Auth)
 
   loading = signal(false)
+  isOwner = signal(false)
+
+  async ngOnInit() {
+    if (this.organization()) {
+      await this.checkOwnership()
+    }
+  }
+
+  async checkOwnership() {
+    try {
+      const result = await this.activityService.getMyActivities()
+      if (result.data) {
+        const owns = result.data.some(act => act.id.toString() === this.activity().id.toString())
+        this.isOwner.set(owns)
+      }
+    } catch (error) {
+      console.error('Error checking ownership:', error)
+    }
+  }
 
   formatDate(dateString?: string): string {
     if (!dateString) return '-'
@@ -43,16 +62,17 @@ export class Activity {
     this.loading.set(true)
 
     try {
-      const { data: userData, error: userError } = await this.auth.getUser()
-      const userId = userData?.user?.id
+      const authState = await firstValueFrom(this.auth.isAuthenticated)
+      const userId = authState?.userId
 
-      if (userError || !userId) {
+      if (!authState.status || !userId) {
         alert('Erro ao obter usuário. Faça login novamente.')
         this.loading.set(false)
         return
       }
+      
       const activityId = this.activity().id
-      const {   error } = await this.activityService.signupToActivity(activityId, userId)
+      const { error } = await this.activityService.signupToActivity(activityId, userId.toString())
 
       if (error) {
         alert(error?.message || 'Erro ao se inscrever na atividade.')
