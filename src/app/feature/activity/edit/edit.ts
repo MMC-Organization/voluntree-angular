@@ -5,12 +5,11 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router'
 import { ActivityService } from '../../../core/services/activity'
 import { LocationService } from '../../../core/services/location'
 import { debounceTime } from 'rxjs'
-import { DateValidator } from '../../../core/validators/dateValidator/date-validator'
 
 @Component({
   selector: 'app-edit-activity',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, DateValidator],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './edit.html',
   styleUrl: './edit.css',
 })
@@ -25,6 +24,8 @@ export class EditActivityComponent implements OnInit {
   submitted = signal(false)
   errorMessage = signal<string | null>(null)
   activityId: string | null = null
+  loading = signal(false)
+  submitting = signal(false)
 
   form = this.fb.nonNullable.group({
     name: ['', Validators.required],
@@ -52,12 +53,12 @@ export class EditActivityComponent implements OnInit {
   async loadActivity() {
     if (!this.activityId) return
 
-    this.isLoading.set(true)
+    this.loading.set(true)
     const result = await this.activityService.getActivityById(this.activityId)
 
     if (result.error || !result.data) {
       this.errorMessage.set('Erro ao carregar atividade')
-      this.isLoading.set(false)
+      this.loading.set(false)
       return
     }
 
@@ -81,7 +82,7 @@ export class EditActivityComponent implements OnInit {
       state: activity.state || '',
     })
 
-    this.isLoading.set(false)
+    this.loading.set(false)
   }
 
   setupCepListener() {
@@ -117,11 +118,12 @@ export class EditActivityComponent implements OnInit {
     const activityDateTime = activityDate ? `${activityDate}T09:00:00` : ''
 
     try {
+      this.submitting.set(true)
       const res: any = await this.activityService.updateActivity(this.activityId, { 
         ...formValue, 
         activityDate: activityDateTime 
       })
-      this.isLoading.set(false)
+      this.submitting.set(false)
 
       if (res.error) {
         this.errorMessage.set(res.error.message || 'Erro ao atualizar atividade')
@@ -131,7 +133,7 @@ export class EditActivityComponent implements OnInit {
       alert('Atividade atualizada com sucesso!')
       this.router.navigate(['/ong/activity', this.activityId])
     } catch (err: any) {
-      this.isLoading.set(false)
+      this.submitting.set(false)
       this.errorMessage.set(err?.message || 'Erro inesperado ao atualizar atividade')
     }
   }

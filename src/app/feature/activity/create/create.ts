@@ -6,15 +6,15 @@ import { ActivityService } from '../../../core/services/activity'
 import { debounceTime } from 'rxjs'
 import { LocationService } from '../../../core/services/location'
 import { Auth } from '../../../core/services/auth/auth'
-import { DateValidator } from "../../../core/validators/dateValidator/date-validator";
 
 @Component({
   selector: 'app-create-activity',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, DateValidator],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './create.html',
   styleUrl: './create.css',
 })
+
 export class Create {
   private fb = inject(FormBuilder)
   private activityService = inject(ActivityService)
@@ -22,7 +22,7 @@ export class Create {
   private locationService = inject(LocationService)
   private authService = inject(Auth)
 
-  isLoading = signal(false)
+  loading = signal(false)
   submitted = signal(false)
   errorMessage = signal<string | null>(null)
 
@@ -64,7 +64,7 @@ export class Create {
       return
     }
 
-    this.isLoading.set(true)
+    this.loading.set(true)
 
     const { city, state, activityDate, ...formValue } = this.form.getRawValue()
     
@@ -76,7 +76,7 @@ export class Create {
         ...formValue, 
         activityDate: activityDateTime 
       })
-      this.isLoading.set(false)
+      this.loading.set(false)
 
       if (res.error) {
         this.errorMessage.set(res.error.message || 'Erro ao criar atividade')
@@ -86,7 +86,7 @@ export class Create {
       alert('Atividade criada com sucesso!')
       this.router.navigate(['/ong'])
     } catch (err: any) {
-      this.isLoading.set(false)
+      this.loading.set(false)
       this.errorMessage.set(err?.message || 'Erro inesperado ao criar atividade')
     }
   }

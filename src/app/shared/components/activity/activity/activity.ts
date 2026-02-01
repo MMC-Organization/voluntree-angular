@@ -1,4 +1,5 @@
 import { Component, input, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { ActivityDetail } from '../../../../core/models/activity.model';
 import { ActivityService } from '../../../../core/services/activity';
 import { Auth } from '../../../../core/services/auth/auth';
@@ -13,6 +14,8 @@ export class Activity {
   activity = input.required<ActivityDetail>()
   organization = input.required<boolean>()
 
+  private router = inject(Router)
+
   private activityService = inject(ActivityService)
   private auth = inject(Auth)
 
@@ -22,6 +25,16 @@ export class Activity {
     if (!dateString) return '-'
     const date = new Date(dateString)
     return date.toLocaleDateString('pt-BR')
+  }
+
+  viewDetails() {
+    const activityId = this.activity().id
+    this.router.navigate(['/ong/activity', activityId])
+  }
+
+  editActivity() {
+    const activityId = this.activity().id
+    this.router.navigate(['/ong/activity/edit', activityId])
   }
 
   async signup() {
