@@ -2,93 +2,232 @@
   <h2 class="text-3xl font-bold text-green-700 mb-8">Meu perfil</h2>
 
   @if (loading()) {
-  <div class="flex justify-center items-center py-20">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-  </div>
-  } @else if (errorMsg()) {
-  <div class="bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg">
-    {{ errorMsg() }}
-  </div>
-  } @else if (profile(); as vol) {
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-    <!-- Card Principal -->
-    <div class="lg:col-span-3 bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-      <div class="bg-emerald-600 p-6">
-        <div class="flex items-center gap-4">
-          <div
-            class="w-20 h-20 bg-emerald-800 rounded-full flex items-center justify-center text-4xl text-white font-bold"
+    <div class="flex justify-center items-center py-20">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+    </div>
+  } 
+  @else if (errorMsg()) {
+    <div class="bg-red-100 border border-red-300 text-red-700 p-4 rounded-lg">
+      {{ errorMsg() }}
+    </div>
+  } 
+  @else if (profile(); as vol) {
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      
+      <div class="lg:col-span-3 bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+        
+        <div class="bg-emerald-600 p-6">
+          <div class="flex items-center gap-4">
+            <div class="w-20 h-20 bg-emerald-800 rounded-full flex items-center justify-center text-4xl text-white font-bold">
+              {{ vol.name[0].toUpperCase() }}
+            </div>
+            
+            <div class="text-white w-full">
+              @if (edit()) {
+                <div [formGroup]="form">
+                    <input 
+                      formControlName="name" 
+                      class="text-2xl font-bold text-gray-800 rounded px-2 py-1 w-full focus:outline-none focus:ring-2 focus:ring-emerald-300" 
+                      placeholder="Seu Nome Completo"
+                    />
+                </div>
+              } @else {
+                <h3 class="text-2xl font-bold">{{ vol.name }}</h3>
+              }
+            </div>
+          </div>
+        </div>
+
+        <form [formGroup]="form" class="p-6 space-y-6">
+          
+          <div>
+            <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Contato</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
+              <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <span class="text-xl">📧</span>
+                <div class="w-full">
+                  <p class="text-xs text-gray-500">E-mail</p>
+                  @if (edit()) {
+                    <input 
+                      formControlName="email" 
+                      class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-gray-800 focus:outline-none focus:border-emerald-500"
+                    />
+                  } @else {
+                    <p class="text-gray-800 font-medium break-all">{{ vol.email || '-' }}</p>
+                  }
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <span class="text-xl">📱</span>
+                <div class="w-full">
+                  <p class="text-xs text-gray-500">Telefone</p>
+                  @if (edit()) {
+                    <input 
+                      formControlName="phoneNumber" 
+                      class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-gray-800 focus:outline-none focus:border-emerald-500"
+                    />
+                  } @else {
+                    <p class="text-gray-800 font-medium">{{ formatPhone(vol.phoneNumber) }}</p>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Endereço</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
+              <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <span class="text-xl">📍</span>
+                <div class="w-full">
+                  <p class="text-xs text-gray-500">CEP</p>
+                  @if (edit()) {
+                    <input 
+                      formControlName="cep" 
+                      maxlength="8"
+                      class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-gray-800 focus:outline-none focus:border-emerald-500"
+                    />
+                  } @else {
+                    <p class="text-gray-800 font-medium">{{ formatCep(vol.cep) }}</p>
+                  }
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <span class="text-xl">🏢</span>
+                <div class="w-full">
+                  <p class="text-xs text-gray-500">Número</p>
+                  @if (edit()) {
+                    <input 
+                      formControlName="number" 
+                      class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-gray-800 focus:outline-none focus:border-emerald-500"
+                    />
+                  } @else {
+                    <p class="text-gray-800 font-medium">{{ vol.number || '-' }}</p>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 h-fit">
+        <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Ações</h4>
+        <div class="space-y-3">
+          
+          <button
+            (click)="toggleEdit()"
+            [class]="edit() 
+              ? 'w-full py-2 px-4 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg font-medium transition-colors'
+              : 'w-full py-2 px-4 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg font-medium transition-colors'"
           >
-            {{ vol.name[0].toUpperCase() }}
-          </div>
-          <div class="text-white">
-            <h3 class="text-2xl font-bold">{{ vol.name }}</h3>
-          </div>
+            {{ edit() ? '❌ Cancelar Edição' : '✏️ Editar Perfil' }}
+          </button>
+
+          @if (edit()) {
+            <button
+              (click)="saveProfile()"
+              [disabled]="form.invalid || save()"
+              class="w-full py-2 px-4 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+            >
+              @if (save()) {
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                Salvando...
+              } @else {
+                💾 Salvar Alterações
+              }
+            </button>
+          }
+
+          <button
+            (click)="togglePasswordMode()"
+            class="w-full py-2 px-4 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg font-medium transition-colors"
+          >
+            🔑 Alterar Senha
+          </button>
+
         </div>
       </div>
 
-      <div class="p-6 space-y-6">
-        <div>
-          <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Contato</h4>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <span class="text-xl">📧</span>
-              <div>
-                <p class="text-xs text-gray-500">E-mail</p>
-                <p class="text-gray-800 font-medium">{{ vol.email || '-' }}</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <span class="text-xl">📱</span>
-              <div>
-                <p class="text-xs text-gray-500">Telefone</p>
-                <p class="text-gray-800 font-medium">{{ formatPhone(vol.phoneNumber) }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Endereço -->
-        <div>
-          <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Endereço</h4>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <span class="text-xl">📍</span>
-              <div>
-                <p class="text-xs text-gray-500">CEP</p>
-                <p class="text-gray-800 font-medium">{{ formatCep(vol.cep) }}</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <span class="text-xl">🏢</span>
-              <div>
-                <p class="text-xs text-gray-500">Número</p>
-                <p class="text-gray-800 font-medium">{{ vol.number || '-' }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
+  }
 
-    <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-      <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Ações</h4>
-      <div class="space-y-3">
-        <button
-          disabled
-          class="w-full py-2 px-4 bg-gray-100 text-gray-400 rounded-lg font-medium cursor-not-allowed"
-          title="Em breve"
-        >
-          ✏️ Editar Perfil (em breve)
-        </button>
-        <button
-          disabled
-          class="w-full py-2 px-4 bg-gray-100 text-gray-400 rounded-lg font-medium cursor-not-allowed"
-          title="Em breve"
-        >
-          🔑 Alterar Senha (em breve)
-        </button>
+@if (EditPassword()) {
+  <div class="fixed inset-0 bg-white/90 z-50 flex items-center justify-center p-4">
+    
+    <div class="bg-white rounded-xl shadow-2xl border border-gray-200 max-w-md w-full overflow-hidden animate-fade-in">
+
+      <div class="bg-emerald-600 p-4 flex justify-between items-center text-white">
+        <h3 class="font-bold text-lg">Alterar Senha</h3>
+        <button (click)="togglePasswordMode()" class="hover:text-emerald-200 text-2xl leading-none">&times;</button>
       </div>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="submitPasswordChange()" class="p-6 space-y-4">
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Senha Atual</label>
+          <input type="password" formControlName="currentPassword" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nova Senha</label>
+          <input type="password" formControlName="newPassword" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Confirmar Nova Senha</label>
+          <input type="password" formControlName="confirmPassword" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        </div>
+
+        <div class="flex gap-3 pt-2">
+           <button 
+             type="button"
+             (click)="togglePasswordMode()"
+             class="flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+           >
+             Cancelar
+           </button>
+           
+           <button 
+             type="submit" 
+             [disabled]="passwordForm.invalid || save()"
+             class="flex-1 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 disabled:opacity-50 flex justify-center items-center transition-colors"
+           >
+             {{ save() ? 'Salvando...' : 'Confirmar' }}
+           </button>
+        </div>
+      </form>
+
     </div>
   </div>
+  }
+  @if (successMessage()) {
+    <div class="fixed top-5 right-5 z-50 animate-bounce">
+      <div class="bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center gap-3 border border-emerald-400">
+        <span class="text-xl">✅</span>
+        <div>
+          <h4 class="font-bold text-sm">Sucesso!</h4>
+          <p class="text-sm text-emerald-100">{{ successMessage() }}</p>
+        </div>
+        <button (click)="successMessage.set(null)" class="ml-4 text-emerald-200 hover:text-white">✕</button>
+      </div>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="fixed top-5 right-5 z-50 animate-bounce">
+      <div class="bg-red-600 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center gap-3 border border-red-400">
+        <span class="text-xl">⚠️</span>
+        <div>
+          <h4 class="font-bold text-sm">Erro!</h4>
+          <p class="text-sm text-red-100">{{ errorMessage() }}</p>
+        </div>
+        <button (click)="errorMessage.set(null)" class="ml-4 text-red-200 hover:text-white">✕</button>
+      </div>
+    </div>
   }
 </div>
