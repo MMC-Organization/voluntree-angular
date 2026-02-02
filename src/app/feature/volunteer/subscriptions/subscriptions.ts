@@ -62,7 +62,7 @@ export class VolunteerSubscriptions {
 
     
 
-      const { error } = await this.activityService.unsubscribeFromActivity(activityId, userId)
+      const { error } = await this.activityService.unsubscribeFromActivity(activityId)
       if (error) {
         alert(error?.message || 'Erro ao se desinscrever.')
         this.loading.set(false)
