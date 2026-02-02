@@ -14,7 +14,7 @@ import { Auth } from '../../../core/services/auth/auth'
 })
 export class VolunteerSubscriptions {
   private activityService = inject(ActivityService)
-  private auth = inject(Auth)
+  
 
   loading = signal(true)
   errorMsg = signal<string | null>(null)
@@ -28,21 +28,15 @@ export class VolunteerSubscriptions {
     this.errorMsg.set(null)
     this.loading.set(true)
     try {
-      const { data: userData, error: userError } = await this.auth.getUser()
-      const userId = userData?.user?.id
+      const { data, error } = await this.activityService.getVolunteerActivities()
 
-      if (userError || !userId) {
+      if (error || !data) {
         this.errorMsg.set('Erro ao obter usuário. Faça login novamente.')
         this.loading.set(false)
         return
       }
 
-      const { data, error } = await this.activityService.getVolunteerActivities(userId)
-      if (error || !data) {
-        this.errorMsg.set(error?.message || 'Erro ao carregar inscrições.')
-        this.loading.set(false)
-        return
-      }
+     
 
       this.activities.set(data)
     } catch (err) {
@@ -64,14 +58,9 @@ export class VolunteerSubscriptions {
 
     this.loading.set(true)
     try {
-      const { data: userData, error: userError } = await this.auth.getUser()
-      const userId = userData?.user?.id
+      
 
-      if (userError || !userId) {
-        alert('Erro ao obter usuário. Faça login novamente.')
-        this.loading.set(false)
-        return
-      }
+    
 
       const { error } = await this.activityService.unsubscribeFromActivity(activityId, userId)
       if (error) {

@@ -123,7 +123,7 @@ export class ActivityService {
 
   async signupToActivity(activityId: string | number, _volunteerId?: string) {
     try {
-      const res = await firstValueFrom(this.http.post(`${environment.apiUrl}/api/registration/activity/${activityId}`, null, { withCredentials: true }))
+      const res = await firstValueFrom(this.http.post(`${environment.apiUrl}/api/registration/activity/${activityId}`, null, { withCredentials: true,responseType: 'text' as 'json'}))
       return { data: res }
     } catch (error: any) {
       return { error }
@@ -160,12 +160,14 @@ export class ActivityService {
 
   async unsubscribeFromActivity(activityId: string | number, _volunteerId?: string) {
     try {
-      await firstValueFrom(this.http.delete(`${environment.apiUrl}/api/registration/activity/${activityId}`, { withCredentials: true }))
+      await firstValueFrom(this.http.delete(`${environment.apiUrl}/api/registration/activity/${activityId}`, { withCredentials: true ,  responseType: 'text' as 'json' }))
       return { data: true }
     } catch (error: any) {
       return { error }
     }
   }
+
+  
 
   async getUpcomingActivities(page = 0, size = 100) {
     try {
