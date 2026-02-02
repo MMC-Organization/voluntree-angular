@@ -30,6 +30,7 @@ export class Volunteer {
     senha: [
       '',
       [
+        Validators.maxLength(20),
         Validators.required,
         Validators.minLength(8),
         Validators.pattern(

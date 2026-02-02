@@ -4,6 +4,7 @@ import { Auth } from '../../../core/services/auth/auth'
 import { HttpClient } from '@angular/common/http'
 import { environment } from '@/environments/environment'
 import { firstValueFrom } from 'rxjs'
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 interface OrganizationProfile {
   id: string
@@ -20,19 +21,45 @@ interface OrganizationProfile {
 @Component({
   selector: 'app-ong-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
 export class OngProfile {
   private authService = inject(Auth)
   private http = inject(HttpClient)
+  private fb = inject(FormBuilder);
 
   profile = signal<OrganizationProfile | null>(null)
   loading = signal(true)
-  errorMsg = signal('')
+  
+  errorMsg = signal('') 
+  
+  errorMessage = signal<string | null>(null)
+  successMessage = signal<string | null>(null)
+
+  edit = signal(false); 
+  save = signal(false); 
+  editPassword = signal(false); 
+
+  form: FormGroup;
+  passwordForm: FormGroup;
 
   constructor() {
+    this.form = this.fb.group({
+      name: ['', [Validators.required]],       
+      email: ['', [Validators.required, Validators.email]], 
+      phoneNumber: ['', [Validators.required]],
+      cep: ['', [Validators.required]],
+      number: ['', [Validators.required]]
+    });
+
+    this.passwordForm = this.fb.group({
+      currentPassword: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required]
+    });
+
     this.loadProfile()
   }
 
@@ -48,6 +75,96 @@ export class OngProfile {
       console.error('Erro ao carregar perfil:', error)
       this.errorMsg.set('Erro ao carregar perfil. Tente novamente.')
       this.loading.set(false)
+    }
+  }
+
+  toggleEdit() {
+    this.edit.update(val => !val); 
+
+    if (this.edit() && this.profile()) {
+      const p = this.profile()!;
+      this.form.patchValue({
+        name: p.name,
+        email: p.email,
+        phoneNumber: p.phoneNumber,
+        cep: p.cep,
+        number: p.number
+      });
+    }
+  }
+
+  async saveProfile() {
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+
+    if (this.form.invalid) {
+        this.errorMessage.set('Preencha os campos corretamente.');
+        return;
+    }
+
+    this.save.set(true); 
+    try {
+      await firstValueFrom(
+        this.http.put(`${environment.apiUrl}/api/user/me`, this.form.value)
+      );
+
+      this.profile.update(current => ({ ...current!, ...this.form.value }));
+      
+      this.edit.set(false); 
+      
+      this.successMessage.set('Perfil da ONG atualizado com sucesso!');
+      setTimeout(() => this.successMessage.set(null), 3000); 
+
+    } catch (error) {
+      console.error('Erro ao salvar', error);
+      this.errorMessage.set('Erro ao atualizar perfil. Tente novamente.');
+      setTimeout(() => this.errorMessage.set(null), 5000);
+    } finally {
+      this.save.set(false); 
+    }
+  }
+
+  togglePasswordMode() {
+    this.editPassword.update(val => !val);
+    if (!this.editPassword()) {
+      this.passwordForm.reset(); 
+    }
+  }
+
+  async submitPasswordChange() {
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+
+    if (this.passwordForm.invalid) return;
+    
+    const { newPassword, confirmPassword, currentPassword } = this.passwordForm.value;
+    
+    if (newPassword !== confirmPassword) {
+      this.errorMessage.set('A confirmação da senha não confere.');
+      setTimeout(() => this.errorMessage.set(null), 3000);
+      return;
+    }
+
+    this.save.set(true); 
+    try {
+      await firstValueFrom(
+        this.http.patch(`${environment.apiUrl}/api/user/me/password`, {
+          oldPassword: currentPassword, 
+          newPassword: newPassword
+        })
+      );
+      
+      this.togglePasswordMode(); 
+
+      this.successMessage.set('Senha alterada com sucesso!');
+      setTimeout(() => this.successMessage.set(null), 3000);
+
+    } catch (error) {
+      console.error('Erro ao mudar senha', error);
+      this.errorMessage.set('Erro ao alterar senha. Verifique a senha atual.');
+      setTimeout(() => this.errorMessage.set(null), 5000);
+    } finally {
+      this.save.set(false);
     }
   }
 
