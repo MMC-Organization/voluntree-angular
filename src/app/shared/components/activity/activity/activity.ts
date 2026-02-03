@@ -17,7 +17,7 @@ export class Activity {
 
   private router = inject(Router)
   private activityService = inject(ActivityService)
-  private auth = inject(Auth)
+  
 
   loading = signal(false)
   isOwner = signal(false)
@@ -59,27 +59,20 @@ export class Activity {
   async signup() {
     if (this.organization()) return
     if (this.loading()) return
+    
     this.loading.set(true)
 
     try {
-      const authState = await firstValueFrom(this.auth.isAuthenticated)
-      const userId = authState?.userId
-
-      if (!authState.status || !userId) {
-        alert('Erro ao obter usuário. Faça login novamente.')
-        this.loading.set(false)
-        return
-      }
-      
       const activityId = this.activity().id
-      const { error } = await this.activityService.signupToActivity(activityId, userId.toString())
+      const { data, error } = await this.activityService.signupToActivity(activityId)
 
       if (error) {
-        alert(error?.message || 'Erro ao se inscrever na atividade.')
-        this.loading.set(false)
-        return
+        
+        const msg = typeof error.error === 'string' ? error.error : 'Erro ao se inscrever.'
+        alert(msg)
+      } else {
+        alert(data || 'Inscrição realizada com sucesso!')
       }
-      alert('Inscrição realizada com sucesso!')
     } 
     catch (err) {
       console.error(err)
@@ -87,4 +80,5 @@ export class Activity {
     } finally {
       this.loading.set(false)
     }
-  }}
+  }
+}
