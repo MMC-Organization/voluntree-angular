@@ -20,6 +20,8 @@ export class LocationService {
 
   getAddressByCep(cep: string): Observable<ViaCepResponse> {
     const cleanCep = String(cep).replace(/\D/g, '')
-    return this.http.get<ViaCepResponse>(`https://viacep.com.br/ws/${cleanCep}/json/`)
+    return this.http.get<ViaCepResponse>(`https://viacep.com.br/ws/${cleanCep}/json/`, {
+      withCredentials: false,
+    })
   }
 }
