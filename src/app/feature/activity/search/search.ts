@@ -4,14 +4,14 @@ import { FormsModule } from '@angular/forms'
 import { LocationService, ViaCepResponse } from '../../../core/services/location'
 import { ActivityService } from '../../../core/services/activity'
 import { ActivityDetail } from '../../../core/models/activity.model'
-import { Activity } from "../../../shared/components/activity/activity/activity";
+import { ActivityVolunteer } from '@/app/shared/components/activity-volunteer/activity-volunteer'
 
 
 
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, Activity],
+  imports: [CommonModule, FormsModule, ActivityVolunteer],
   templateUrl: './search.html',
   styleUrl: './search.css',
 })

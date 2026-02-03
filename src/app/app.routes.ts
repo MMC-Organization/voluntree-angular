@@ -47,7 +47,7 @@ export const routes: Routes = [
         canActivate: [volunteerGuard],
         loadComponent: () =>
           import('./shared/layouts/volunteer-layout/volunteer-layout').then(
-            (m) => m.VolunteerLayout
+            (m) => m.VolunteerLayout,
           ),
         children: [
           {
@@ -57,13 +57,23 @@ export const routes: Routes = [
           },
           {
             path: 'profile',
-            loadComponent: () => import('./feature/volunteer/profile/profile').then(m => m.VolProfile)
+            loadComponent: () =>
+              import('./feature/volunteer/profile/profile').then((m) => m.VolProfile),
           },
           {
-  path: 'activities',
-  loadComponent: () =>
-    import('./feature/volunteer/subscriptions/subscriptions').then((m) => m.VolunteerSubscriptions),
-}
+            path: 'activities',
+            loadComponent: () =>
+              import('./feature/volunteer/subscriptions/subscriptions').then(
+                (m) => m.VolunteerSubscriptions,
+              ),
+          },
+          {
+            path: 'activity/:id',
+            loadComponent: () =>
+              import('./feature/activity/volunteer-detail/volunteer-detail').then(
+                (m) => m.ActivityVolunteerDetailComponent,
+              ),
+          },
         ],
       },
       {
@@ -79,13 +89,11 @@ export const routes: Routes = [
           },
           {
             path: 'profile',
-            loadComponent: () =>
-              import('./feature/ong/profile/profile').then((m) => m.OngProfile),
+            loadComponent: () => import('./feature/ong/profile/profile').then((m) => m.OngProfile),
           },
           {
             path: 'activity/create',
-            loadComponent: () =>
-              import('./feature/activity/create/create').then((m) => m.Create),
+            loadComponent: () => import('./feature/activity/create/create').then((m) => m.Create),
           },
           {
             path: 'activity/edit/:id',

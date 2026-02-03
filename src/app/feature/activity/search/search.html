@@ -77,7 +77,7 @@
     <!-- Activities Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       @for (activity of filteredActivities(); track activity.id) {
-        <app-activity [activity]="activity" [organization]="false" />
+        <app-activity-volunteer [activity]="activity" />
       } @empty {
         <div class="col-span-full bg-white rounded-2xl shadow-lg p-16 text-center">
           <div class="text-8xl mb-6">🔍</div>
