@@ -1,0 +1,74 @@
+<div
+  class="bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl hover:border-blue-200 transition-all duration-300 overflow-hidden transform hover:-translate-y-1"
+>
+  <!-- Status Badge -->
+  <div class="relative">
+    @if (activity().canceled) {
+      <div class="absolute top-3 right-3 z-10">
+        <span
+          class="inline-flex items-center gap-1.5 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md"
+        >
+          <span class="w-1.5 h-1.5 bg-white rounded-full"></span>
+          CANCELADA
+        </span>
+      </div>
+    } @else {
+      <div class="absolute top-3 right-3 z-10">
+        <span
+          class="inline-flex items-center gap-1.5 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md"
+        >
+          <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+          DISPONÍVEL
+        </span>
+      </div>
+    }
+
+    <div class="p-6" [class.opacity-60]="activity().canceled">
+      <div class="flex justify-between items-start mb-4 pr-24">
+        <div>
+          <h3 class="font-bold text-xl text-gray-900 mb-1">{{ activity().name }}</h3>
+          <span class="text-sm text-blue-600 font-medium">
+            🏢 {{ activity().organizationName }}
+          </span>
+          <span class="text-sm text-gray-500 font-medium block mt-1">
+            📍 {{ activity().city }}
+          </span>
+        </div>
+      </div>
+
+      <p class="text-gray-600 text-sm line-clamp-2 mb-5 leading-relaxed">
+        {{ activity().description }}
+      </p>
+
+      <div class="space-y-2 mb-5">
+        <div class="flex items-center gap-3 text-sm bg-gray-50 p-3 rounded-lg">
+          <span class="text-lg">📅</span>
+          <span class="text-gray-700 font-medium">{{ formatDate(activity().date) }}</span>
+        </div>
+        <div class="flex items-center gap-3 text-sm bg-gray-50 p-3 rounded-lg">
+          <span class="text-lg">👥</span>
+          <span class="text-gray-700 font-medium">{{ activity().spots }} vagas disponíveis</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="px-6 pb-6 flex gap-3">
+    <button
+      (click)="viewDetails()"
+      class="flex-1 py-2.5 bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-sm shadow-md hover:shadow-lg transform hover:scale-105"
+    >
+      👁️ Ver Detalhes
+    </button>
+    @if (!activity().canceled) {
+      <button
+        (click)="signup()"
+        [disabled]="loading()"
+        class="flex-1 py-2.5 bg-linear-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all font-semibold text-sm shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {{ loading() ? '⏳ Aguarde...' : '🤝 Participar' }}
+      </button>
+    }
+  </div>
+</div>
