@@ -11,7 +11,9 @@ import { environment } from '@/environments/environment';
  */
 export const credentialsInterceptor: HttpInterceptorFn = (req, next) => {
   // Verifica se a requisição é para o backend da aplicação
-  const isBackendRequest = req.url.startsWith(environment.apiUrl) || 
+  // Apenas adiciona credentials se apiUrl estiver configurado E a URL começar com ele,
+  // OU se for uma URL relativa (começa com /api)
+  const isBackendRequest = (environment.apiUrl && req.url.startsWith(environment.apiUrl)) || 
                           req.url.startsWith('/api');
   
   // Adiciona withCredentials apenas para requisições ao backend
